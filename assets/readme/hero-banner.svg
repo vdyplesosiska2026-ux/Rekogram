@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f141c" />
+      <stop offset="50%" stop-color="#151d2a" />
+      <stop offset="100%" stop-color="#0b0e14" />
+    </linearGradient>
+
+    <!-- Brand Cyan-Blue Glow -->
+    <linearGradient id="primaryGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2AABEE" />
+      <stop offset="50%" stop-color="#229ED9" />
+      <stop offset="100%" stop-color="#7362F2" />
+    </linearGradient>
+
+    <!-- Gold Accent Gradient -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="100%" stop-color="#FFB300" />
+    </linearGradient>
+
+    <!-- Subtle Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#229ED9" stroke-width="0.75" stroke-opacity="0.08" />
+    </pattern>
+
+    <!-- Radial Ambient Glow -->
+    <radialGradient id="centerLight" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#229ED9" stop-opacity="0.18" />
+      <stop offset="60%" stop-color="#7362F2" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="420" fill="url(#bgGradient)" rx="16" />
+  <rect width="1200" height="420" fill="url(#grid)" rx="16" />
+  <rect width="1200" height="420" fill="url(#centerLight)" rx="16" />
+
+  <!-- Outer Border -->
+  <rect width="1198" height="418" x="1" y="1" fill="none" stroke="#2AABEE" stroke-width="1.5" stroke-opacity="0.25" rx="15" />
+
+  <!-- Abstract Aesthetic Geometric Nodes -->
+  <g opacity="0.4">
+    <circle cx="160" cy="120" r="3" fill="#2AABEE" />
+    <circle cx="280" cy="80" r="2" fill="#7362F2" />
+    <circle cx="1040" cy="140" r="3" fill="#2AABEE" />
+    <circle cx="920" cy="90" r="2.5" fill="#FFD54F" />
+    <circle cx="1080" cy="300" r="3" fill="#229ED9" />
+    <circle cx="120" cy="320" r="2.5" fill="#7362F2" />
+    <line x1="160" y1="120" x2="280" y2="80" stroke="#2AABEE" stroke-width="0.7" stroke-dasharray="4 4" />
+    <line x1="1040" y1="140" x2="920" y2="90" stroke="#2AABEE" stroke-width="0.7" stroke-dasharray="4 4" />
+  </g>
+
+  <!-- Central Emblem / Monogram Logo -->
+  <g transform="translate(600, 115)">
+    <!-- Shield / Hexagon Shadow Backing -->
+    <circle cx="0" cy="0" r="62" fill="#1b2433" stroke="#2AABEE" stroke-width="2" stroke-opacity="0.5" />
+    <circle cx="0" cy="0" r="54" fill="#161e2b" />
+
+    <!-- Stylized Paper Plane & Crown Fusion -->
+    <path d="M -26 -14 L 32 -4 L -14 26 L -7 4 Z" fill="url(#primaryGlow)" />
+    <path d="M -7 4 L 32 -4 L -2 3 Z" fill="#ffffff" fill-opacity="0.9" />
+
+    <!-- Creator Crest Mini Crown on Top of Icon -->
+    <path d="M -12 -38 L -4 -28 L 0 -36 L 4 -28 L 12 -38 L 8 -24 L -8 -24 Z" fill="url(#goldGradient)" />
+    <circle cx="-12" cy="-39" r="1.5" fill="#FFE082" />
+    <circle cx="0" cy="-37" r="1.8" fill="#FFE082" />
+    <circle cx="12" cy="-39" r="1.5" fill="#FFE082" />
+  </g>
+
+  <!-- Title: REKOGRAM -->
+  <text x="600" y="240" 
+        text-anchor="middle" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
+        font-size="44" 
+        font-weight="800" 
+        letter-spacing="9" 
+        fill="#FFFFFF">
+    REKOGRAM
+  </text>
+
+  <!-- Subtitle Tagline -->
+  <text x="600" y="278" 
+        text-anchor="middle" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
+        font-size="16" 
+        font-weight="500" 
+        letter-spacing="2" 
+        fill="#2AABEE">
+    ADVANCED DESKTOP CLIENT BASED ON TELEGRAM
+  </text>
+
+  <!-- Core Highlights / Badges Bar -->
+  <g transform="translate(600, 340)">
+    <!-- Pill 1 -->
+    <g transform="translate(-250, 0)">
+      <rect x="-80" y="-18" width="160" height="36" rx="18" fill="#1b2535" stroke="#2AABEE" stroke-width="1" stroke-opacity="0.3" />
+      <text x="0" y="5" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#E0E6ED">⚡ C++20 &amp; Qt6</text>
+    </g>
+
+    <!-- Pill 2 -->
+    <g transform="translate(0, 0)">
+      <rect x="-80" y="-18" width="160" height="36" rx="18" fill="#1b2535" stroke="#7362F2" stroke-width="1" stroke-opacity="0.4" />
+      <text x="0" y="5" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#E0E6ED">🔒 Native MTProto</text>
+    </g>
+
+    <!-- Pill 3 -->
+    <g transform="translate(250, 0)">
+      <rect x="-80" y="-18" width="160" height="36" rx="18" fill="#1b2535" stroke="#FFD54F" stroke-width="1" stroke-opacity="0.3" />
+      <text x="0" y="5" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#E0E6ED">🎨 Seamless Design</text>
+    </g>
+  </g>
+</svg>
