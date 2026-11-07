@@ -4,6 +4,19 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/).
 
+## [1.2.0-dev] - 2026-11-08 — Build System & Native Assembly
+
+### Добавлено
+- **Интеграция сборочной среды на диске D:** (`D:\TBuild`):
+  - Настроены прекомпилированные библиотеки и зависимости (Qt 5.15.19, WebRTC, FFmpeg, OpenSSL, MSYS2, NuGet).
+  - Успешно сконфигурирован проект CMake с официальными API-ключами (`TDESKTOP_API_ID`, `TDESKTOP_API_HASH`).
+  - Подключены все исходные файлы Rekogram (`rekogram/*.cpp`, `rekogram/*.h`, `settings_rekogram.*`) в целевой таргет `Telegram`.
+  - Запущен процесс первой нативной сборки исполняемого файла Rekogram для Windows x64.
+- **Поддержка навигации меню**:
+  - Оптимизирован переход в раздел «Настройки Rekogram» через стандартный механизм `builder.addSectionButton()`.
+
+---
+
 ## [1.1.0-dev] - 2026-11-08 — Expansion Update
 
 ### Добавлено
