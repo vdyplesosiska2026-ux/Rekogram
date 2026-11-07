@@ -15,8 +15,12 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "rekogram/rekogram_backup.h"
 #include "rekogram/rekogram_badge.h"
 #include "rekogram/rekogram_bookmarks.h"
+#include "rekogram/rekogram_command_palette.h"
+#include "rekogram/rekogram_plugin_system.h"
+#include "rekogram/rekogram_quick_replies.h"
 #include "rekogram/rekogram_reminders.h"
 #include "rekogram/rekogram_settings.h"
+#include "rekogram/rekogram_streamer_mode.h"
 #include "settings/sections/settings_main.h"
 #include "settings/sections/settings_shortcuts.h"
 #include "settings/settings_builder.h"
@@ -268,6 +272,96 @@ void SetupAIChatSection(SectionBuilder &builder) {
 	builder.addSkip();
 }
 
+void SetupPrivacyAndSecurity(SectionBuilder &builder) {
+	builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Приватность и защита (Privacy & Security)")));
+
+	// Streamer Mode Toggle
+	builder.add([=](const WidgetContext &ctx) {
+		auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+		const auto checkbox = wrap->add(
+			object_ptr<Ui::Checkbox>(
+				wrap.data(),
+				QString::fromUtf8("Режим стримера (Streamer Shield)"),
+				Rekogram::StreamerModeManager::Instance().enabled(),
+				st::defaultCheckbox),
+			st::settingsCheckboxPadding);
+
+		checkbox->checkedChanges(
+		) | rpl::on_next([=](bool checked) {
+			Rekogram::StreamerModeManager::Instance().setEnabled(checked);
+			Ui::Toast::Show(checked
+				? QString::fromUtf8("Режим стримера включен: данные маскируются")
+				: QString::fromUtf8("Режим стримера выключен"));
+		}, checkbox->lifetime());
+
+		return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+	});
+
+	builder.addSkip();
+}
+
+void SetupPluginsAndCommands(SectionBuilder &builder) {
+	const auto controller = builder.controller();
+
+	builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Экосистема Rekogram (Плагины и команды)")));
+
+	builder.addButton({
+		.id = u"rekogram/palette_preview"_q,
+		.title = rpl::single(QString::fromUtf8("Палитра быстрых команд (Command Palette)")),
+		.icon = { &st::menuIconKeyboard },
+		.onClick = [=] {
+			const auto cmds = Rekogram::CommandPaletteManager::Instance().commands();
+			QString text = QString::fromUtf8("Зарегистрированные системные команды Rekogram:\n\n");
+			for (const auto &c : cmds) {
+				text += QString("[%1] %2 (%3)\n").arg(c.category, c.title, c.shortcut.isEmpty() ? "действие" : c.shortcut);
+			}
+			controller->show(Ui::MakeConfirmBox({
+				.title = QString::fromUtf8("Командная палитра Rekogram"),
+				.text = text,
+				.confirmText = QString::fromUtf8("Понятно"),
+			}));
+		},
+	});
+
+	builder.addButton({
+		.id = u"rekogram/quick_replies_info"_q,
+		.title = rpl::single(QString::fromUtf8("Шаблоны быстрых ответов (Quick Replies)")),
+		.icon = { &st::menuIconDiscussion },
+		.onClick = [=] {
+			const auto list = Rekogram::QuickRepliesManager::Instance().list();
+			QString text = QString::fromUtf8("Настроенные быстрые сниппеты ответов:\n\n");
+			for (const auto &item : list) {
+				text += QString("%1 -> \"%2\"\n").arg(item.keyword, item.text);
+			}
+			controller->show(Ui::MakeConfirmBox({
+				.title = QString::fromUtf8("Быстрые ответы Rekogram"),
+				.text = text,
+				.confirmText = QString::fromUtf8("Закрыть"),
+			}));
+		},
+	});
+
+	builder.addButton({
+		.id = u"rekogram/plugins_status"_q,
+		.title = rpl::single(QString::fromUtf8("Менеджер плагинов (Rekogram Extensions)")),
+		.icon = { &st::menuIconShowInFolder },
+		.onClick = [=] {
+			const auto plugins = Rekogram::PluginManager::Instance().plugins();
+			QString text = QString::fromUtf8("Активные встроенные расширения:\n\n");
+			for (const auto &p : plugins) {
+				text += QString("• %1 v%2 — %3 [%4]\n").arg(p.name, p.version, p.description, p.enabled ? "Вкл" : "Выкл");
+			}
+			controller->show(Ui::MakeConfirmBox({
+				.title = QString::fromUtf8("Модули расширения Rekogram"),
+				.text = text,
+				.confirmText = QString::fromUtf8("Готово"),
+			}));
+		},
+	});
+
+	builder.addSkip();
+}
+
 void SetupRekogramHub(SectionBuilder &builder) {
 	const auto controller = builder.controller();
 
@@ -343,6 +437,14 @@ void RekogramSection::setupContent() {
 		builder.addSkip();
 
 		SetupAIChatSection(builder);
+		builder.addDivider();
+		builder.addSkip();
+
+		SetupPrivacyAndSecurity(builder);
+		builder.addDivider();
+		builder.addSkip();
+
+		SetupPluginsAndCommands(builder);
 		builder.addDivider();
 		builder.addSkip();
 

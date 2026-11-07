@@ -1987,10 +1987,20 @@ PRIVATE
     rekogram/rekogram_badge.h
     rekogram/rekogram_bookmarks.cpp
     rekogram/rekogram_bookmarks.h
+    rekogram/rekogram_command_palette.cpp
+    rekogram/rekogram_command_palette.h
+    rekogram/rekogram_inspector.cpp
+    rekogram/rekogram_inspector.h
+    rekogram/rekogram_plugin_system.cpp
+    rekogram/rekogram_plugin_system.h
+    rekogram/rekogram_quick_replies.cpp
+    rekogram/rekogram_quick_replies.h
     rekogram/rekogram_reminders.cpp
     rekogram/rekogram_reminders.h
     rekogram/rekogram_settings.cpp
     rekogram/rekogram_settings.h
+    rekogram/rekogram_streamer_mode.cpp
+    rekogram/rekogram_streamer_mode.h
     settings/sections/settings_rekogram.cpp
     settings/sections/settings_rekogram.h
     settings/sections/settings_main.cpp

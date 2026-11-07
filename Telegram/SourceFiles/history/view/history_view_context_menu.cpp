@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "history/view/history_view_context_menu.h"
 
 #include "rekogram/rekogram_bookmarks.h"
+#include "rekogram/rekogram_inspector.h"
 #include "rekogram/rekogram_reminders.h"
 
 #include "api/api_attached_stickers.h"
@@ -658,6 +659,13 @@ void AddForwardAction(
 				Ui::Toast::Show(QString::fromUtf8("Напоминание установлено на 1 час"));
 			},
 			&st::menuIconHistory);
+
+		menu->addAction(
+			QString::fromUtf8("Инспектор сообщения (ID/Данные)"),
+			[=] {
+				Rekogram::MessageInspector::Inspect(list->controller(), item);
+			},
+			&st::menuIconEmojiObjects);
 	}
 }
 
