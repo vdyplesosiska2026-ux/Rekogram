@@ -7,6 +7,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_context_menu.h"
 
+#include "rekogram/rekogram_bookmarks.h"
+#include "rekogram/rekogram_reminders.h"
+
 #include "api/api_attached_stickers.h"
 #include "api/api_editing.h"
 #include "api/api_global_privacy.h"
@@ -623,6 +626,39 @@ void AddForwardAction(
 		not_null<ListWidget*> list) {
 	AddForwardSelectedAction(menu, request, list);
 	AddForwardMessageAction(menu, request, list);
+
+	const auto item = request.item;
+	if (item && request.selectedItems.empty()) {
+		const auto itemId = item->fullId();
+		const auto isBookmarked = Rekogram::BookmarksManager::Instance().isBookmarked(itemId);
+		menu->addAction(
+			isBookmarked
+				? QString::fromUtf8("Удалить из закладок Rekogram")
+				: QString::fromUtf8("Сохранить в закладки Rekogram"),
+			[=] {
+				if (isBookmarked) {
+					Rekogram::BookmarksManager::Instance().removeBookmark(itemId);
+					Ui::Toast::Show(QString::fromUtf8("Удалено из закладок Rekogram"));
+				} else {
+					Rekogram::BookmarksManager::Instance().addBookmark(
+						itemId,
+						item->toText().text);
+					Ui::Toast::Show(QString::fromUtf8("Сохранено в закладки Rekogram"));
+				}
+			},
+			&st::menuIconShowInFolder);
+
+		menu->addAction(
+			QString::fromUtf8("Напомнить об этом сообщении"),
+			[=] {
+				Rekogram::RemindersManager::Instance().addReminder(
+					itemId,
+					item->toText().text,
+					QDateTime::currentDateTime().addSecs(3600)); // +1 hour reminder
+				Ui::Toast::Show(QString::fromUtf8("Напоминание установлено на 1 час"));
+			},
+			&st::menuIconHistory);
+	}
 }
 
 void AddOfferAction(

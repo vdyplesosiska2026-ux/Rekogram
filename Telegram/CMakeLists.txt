@@ -1979,8 +1979,16 @@ PRIVATE
     settings/sections/settings_local_passcode.h
     settings/sections/settings_local_storage.cpp
     settings/sections/settings_local_storage.h
+    rekogram/rekogram_ai_chat.cpp
+    rekogram/rekogram_ai_chat.h
+    rekogram/rekogram_backup.cpp
+    rekogram/rekogram_backup.h
     rekogram/rekogram_badge.cpp
     rekogram/rekogram_badge.h
+    rekogram/rekogram_bookmarks.cpp
+    rekogram/rekogram_bookmarks.h
+    rekogram/rekogram_reminders.cpp
+    rekogram/rekogram_reminders.h
     rekogram/rekogram_settings.cpp
     rekogram/rekogram_settings.h
     settings/sections/settings_rekogram.cpp

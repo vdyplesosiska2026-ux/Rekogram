@@ -11,13 +11,19 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "core/application.h"
 #include "core/version.h"
 #include "main/main_session.h"
+#include "rekogram/rekogram_ai_chat.h"
+#include "rekogram/rekogram_backup.h"
 #include "rekogram/rekogram_badge.h"
+#include "rekogram/rekogram_bookmarks.h"
+#include "rekogram/rekogram_reminders.h"
 #include "rekogram/rekogram_settings.h"
 #include "settings/sections/settings_main.h"
+#include "settings/sections/settings_shortcuts.h"
 #include "settings/settings_builder.h"
 #include "settings/settings_common_session.h"
 #include "ui/boxes/confirm_box.h"
 #include "ui/painter.h"
+#include "ui/toast/toast.h"
 #include "ui/vertical_list.h"
 #include "ui/widgets/box_content_divider.h"
 #include "ui/widgets/buttons.h"
@@ -157,6 +163,111 @@ void SetupInterfaceLab(SectionBuilder &builder) {
 	builder.addSkip();
 }
 
+void SetupShortcutsAndTools(SectionBuilder &builder) {
+	const auto showOther = builder.showOther();
+	const auto controller = builder.controller();
+
+	builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Горячие клавиши и управление (Rekogram Shortcuts)")));
+
+	builder.addButton({
+		.id = u"rekogram/shortcuts"_q,
+		.title = rpl::single(QString::fromUtf8("Настройка горячих клавиш")),
+		.icon = { &st::menuIconKeyboard },
+		.onClick = [=] { showOther(ShortcutsId()); },
+	});
+
+	builder.addButton({
+		.id = u"rekogram/bookmarks_count"_q,
+		.title = rpl::single(QString::fromUtf8("Сохранённые закладки сообщений")),
+		.icon = { &st::menuIconShowInFolder },
+		.onClick = [=] {
+			const auto count = Rekogram::BookmarksManager::Instance().list().size();
+			controller->show(Ui::MakeConfirmBox({
+				.title = QString::fromUtf8("Закладки Rekogram"),
+				.text = QString::fromUtf8("Всего сохранено сообщений в закладках: %1.\n\nДобавлять сообщения в закладки можно через контекстное меню любого сообщения в чате.").arg(count),
+				.confirmText = QString::fromUtf8("Понятно"),
+			}));
+		},
+	});
+
+	builder.addButton({
+		.id = u"rekogram/reminders_count"_q,
+		.title = rpl::single(QString::fromUtf8("Активные напоминания")),
+		.icon = { &st::menuIconHistory },
+		.onClick = [=] {
+			const auto count = Rekogram::RemindersManager::Instance().activeReminders().size();
+			controller->show(Ui::MakeConfirmBox({
+				.title = QString::fromUtf8("Напоминания Rekogram"),
+				.text = QString::fromUtf8("Количество активных напоминаний о сообщениях: %1.\n\nУстановить напоминание можно через контекстное меню любого сообщения в чате.").arg(count),
+				.confirmText = QString::fromUtf8("Понятно"),
+			}));
+		},
+	});
+
+	builder.addSkip();
+}
+
+void SetupBackupSection(SectionBuilder &builder) {
+	const auto controller = builder.controller();
+
+	builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Резервное копирование (Settings Backup)")));
+
+	builder.addButton({
+		.id = u"rekogram/export_settings"_q,
+		.title = rpl::single(QString::fromUtf8("Экспорт настроек Rekogram в JSON")),
+		.icon = { &st::menuIconSave },
+		.onClick = [=] {
+			const auto json = Rekogram::BackupManager::ExportSettings();
+			QGuiApplication::clipboard()->setText(QString::fromUtf8(json));
+			Ui::Toast::Show(QString::fromUtf8("Конфигурация JSON скопирована в буфер обмена"));
+		},
+	});
+
+	builder.addButton({
+		.id = u"rekogram/import_settings"_q,
+		.title = rpl::single(QString::fromUtf8("Импорт настроек из буфера обмена")),
+		.icon = { &st::menuIconCloudDownload },
+		.onClick = [=] {
+			const auto clipboardText = QGuiApplication::clipboard()->text().toUtf8();
+			QString error;
+			if (Rekogram::BackupManager::ImportSettings(clipboardText, &error)) {
+				Ui::Toast::Show(QString::fromUtf8("Настройки Rekogram успешно импортированы!"));
+			} else {
+				controller->show(Ui::MakeInformBox(error));
+			}
+		},
+	});
+
+	builder.addSkip();
+}
+
+void SetupAIChatSection(SectionBuilder &builder) {
+	const auto controller = builder.controller();
+
+	builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Rekogram AI Chat")));
+
+	builder.addButton({
+		.id = u"rekogram/ai_status"_q,
+		.title = rpl::single(QString::fromUtf8("Статус AI Chat: Архитектура подготовлена")),
+		.icon = { &st::menuIconDiscussion },
+		.onClick = [=] {
+			const auto count = Rekogram::AIChatManager::Instance().messages().size();
+			controller->show(Ui::MakeConfirmBox({
+				.title = QString::fromUtf8("Rekogram AI Chat"),
+				.text = QString::fromUtf8(
+					"Провайдер: %1\n"
+					"Сообщений в локальной истории: %2\n\n"
+					"Модуль диалога полностью сохраняет оригинальный стиль Telegram Desktop. Подключение внешних нейросетевых API будет осуществляться на следующих этапах без изменения интерфейса переписки.")
+					.arg(Rekogram::AIChatManager::Instance().providerName())
+					.arg(count),
+				.confirmText = QString::fromUtf8("Понятно"),
+			}));
+		},
+	});
+
+	builder.addSkip();
+}
+
 void SetupRekogramHub(SectionBuilder &builder) {
 	const auto controller = builder.controller();
 
@@ -220,6 +331,18 @@ void RekogramSection::setupContent() {
 		builder.addSkip();
 
 		SetupInterfaceLab(builder);
+		builder.addDivider();
+		builder.addSkip();
+
+		SetupShortcutsAndTools(builder);
+		builder.addDivider();
+		builder.addSkip();
+
+		SetupBackupSection(builder);
+		builder.addDivider();
+		builder.addSkip();
+
+		SetupAIChatSection(builder);
 		builder.addDivider();
 		builder.addSkip();
 
