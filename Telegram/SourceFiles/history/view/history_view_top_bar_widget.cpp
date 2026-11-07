@@ -7,6 +7,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "history/view/history_view_top_bar_widget.h"
 
+#include "rekogram/rekogram_badge.h"
+#include "rekogram/rekogram_settings.h"
+
 #include "history/history.h"
 #include "history/view/history_view_send_action.h"
 #include "boxes/add_contact_box.h"
@@ -705,6 +708,17 @@ void TopBarWidget::paintTopBar(Painter &p) {
 				Window::GifPauseReason::Any),
 		});
 		namewidth -= badgeWidth;
+
+		if (namePeer && Rekogram::IsOwnerPeer(namePeer->id)) {
+			Rekogram::PaintCreatorBadge(
+				p,
+				QPoint(nameleft, nametop),
+				st::msgNameStyle.font->height,
+				st::dialogsVerifiedIconBg->c);
+			const auto creatorSkip = Rekogram::CreatorBadgeWidth();
+			nameleft += creatorSkip;
+			namewidth -= creatorSkip;
+		}
 
 		p.setPen(st::dialogsNameFg);
 		_title.draw(p, {
