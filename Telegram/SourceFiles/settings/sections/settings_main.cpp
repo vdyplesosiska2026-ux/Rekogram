@@ -7,6 +7,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "settings/sections/settings_main.h"
 
+#include "settings/sections/settings_rekogram.h"
+
 #include "settings/settings_common_session.h"
 
 #include "api/api_cloud_password.h"
@@ -640,6 +642,19 @@ void BuildHelpSection(SectionBuilder &builder) {
 		.icon = { &st::menuIconDiscussion },
 		.onClick = [=] { OpenAskQuestionConfirm(controller); },
 		.keywords = { u"contact"_q, u"feedback"_q },
+	});
+
+	builder.addSkip();
+
+	builder.addDivider();
+	builder.addSkip();
+
+	builder.addButton({
+		.id = u"main/rekogram_settings"_q,
+		.title = rpl::single(QString::fromUtf8("Настройки Rekogram")),
+		.icon = { &st::menuIconSettings },
+		.onClick = [=] { showOther(RekogramId()); },
+		.keywords = { u"rekogram"_q, u"custom"_q, u"theme"_q, u"owner"_q },
 	});
 
 	builder.addSkip();
