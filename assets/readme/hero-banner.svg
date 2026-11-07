@@ -1,115 +1,125 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 540" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f141c" />
-      <stop offset="50%" stop-color="#151d2a" />
-      <stop offset="100%" stop-color="#0b0e14" />
+    <!-- Subtle canvas backdrop gradient (Apple light aesthetic) -->
+    <linearGradient id="appleCanvasBg" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FBFBFD" />
+      <stop offset="100%" stop-color="#F2F2F5" />
     </linearGradient>
 
-    <!-- Brand Cyan-Blue Glow -->
-    <linearGradient id="primaryGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2AABEE" />
-      <stop offset="50%" stop-color="#229ED9" />
-      <stop offset="100%" stop-color="#7362F2" />
+    <!-- Card Background Gradient -->
+    <linearGradient id="cardSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FAFAFC" />
     </linearGradient>
 
-    <!-- Gold Accent Gradient -->
-    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFE082" />
-      <stop offset="100%" stop-color="#FFB300" />
-    </linearGradient>
+    <!-- Refined Apple-style soft drop shadow -->
+    <filter id="naturalCardShadow" x="-10%" y="-10%" width="125%" height="130%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000000" flood-opacity="0.05" />
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.03" />
+    </filter>
 
-    <!-- Subtle Grid Pattern -->
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#229ED9" stroke-width="0.75" stroke-opacity="0.08" />
-    </pattern>
-
-    <!-- Radial Ambient Glow -->
-    <radialGradient id="centerLight" cx="50%" cy="40%" r="55%">
-      <stop offset="0%" stop-color="#229ED9" stop-opacity="0.18" />
-      <stop offset="60%" stop-color="#7362F2" stop-opacity="0.05" />
-      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
-    </radialGradient>
+    <filter id="accentBadgeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0071E3" flood-opacity="0.12" />
+    </filter>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="1200" height="420" fill="url(#bgGradient)" rx="16" />
-  <rect width="1200" height="420" fill="url(#grid)" rx="16" />
-  <rect width="1200" height="420" fill="url(#centerLight)" rx="16" />
+  <!-- 1. Background Canvas -->
+  <rect width="1280" height="540" fill="url(#appleCanvasBg)" rx="20" />
+  <rect width="1278" height="538" x="1" y="1" fill="none" stroke="#E5E5EA" stroke-width="1" rx="19" />
 
-  <!-- Outer Border -->
-  <rect width="1198" height="418" x="1" y="1" fill="none" stroke="#2AABEE" stroke-width="1.5" stroke-opacity="0.25" rx="15" />
+  <!-- 2. Minimalist Interface Preview Mockup (Centered-Bottom subtle peek) -->
+  <g transform="translate(640, 395)">
+    <!-- Central UI Window Preview (Simulating Telegram Desktop header & conversation snippet) -->
+    <g filter="url(#naturalCardShadow)">
+      <!-- Window Base -->
+      <rect x="-380" y="0" width="760" height="145" rx="14" fill="url(#cardSurface)" stroke="#E5E5EA" stroke-width="0.8" />
+      
+      <!-- Window Titlebar / Header line -->
+      <line x1="-380" y1="46" x2="380" y2="46" stroke="#EFEFEF" stroke-width="1" />
+      
+      <!-- macOS Window Traffic Lights -->
+      <circle cx="-356" cy="23" r="4.5" fill="#FF5F56" stroke="#E0443E" stroke-width="0.5" />
+      <circle cx="-340" cy="23" r="4.5" fill="#FFBD2E" stroke="#DEA123" stroke-width="0.5" />
+      <circle cx="-324" cy="23" r="4.5" fill="#27C93F" stroke="#1AAB29" stroke-width="0.5" />
 
-  <!-- Abstract Aesthetic Geometric Nodes -->
-  <g opacity="0.4">
-    <circle cx="160" cy="120" r="3" fill="#2AABEE" />
-    <circle cx="280" cy="80" r="2" fill="#7362F2" />
-    <circle cx="1040" cy="140" r="3" fill="#2AABEE" />
-    <circle cx="920" cy="90" r="2.5" fill="#FFD54F" />
-    <circle cx="1080" cy="300" r="3" fill="#229ED9" />
-    <circle cx="120" cy="320" r="2.5" fill="#7362F2" />
-    <line x1="160" y1="120" x2="280" y2="80" stroke="#2AABEE" stroke-width="0.7" stroke-dasharray="4 4" />
-    <line x1="1040" y1="140" x2="920" y2="90" stroke="#2AABEE" stroke-width="0.7" stroke-dasharray="4 4" />
+      <!-- Center Title in Header -->
+      <text x="0" y="28" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Helvetica, sans-serif" font-size="12" font-weight="600" fill="#1D1D1F">Rekogram Desktop</text>
+
+      <!-- Sidebar / Content Divider -->
+      <line x1="-140" y1="46" x2="-140" y2="145" stroke="#EFEFEF" stroke-width="1" />
+
+      <!-- Left Sidebar Mock (Chat List Items) -->
+      <!-- Item 1 (Selected Chat) -->
+      <rect x="-370" y="54" width="220" height="38" rx="8" fill="#E8F2FE" />
+      <!-- Avatar -->
+      <circle cx="-348" cy="73" r="13" fill="#0071E3" />
+      <!-- Paperplane Glyph inside Avatar -->
+      <path d="M -353 71 L -343 73 L -351 77 Z" fill="#FFFFFF" />
+      <!-- Text lines -->
+      <rect x="-326" y="66" width="75" height="6.5" rx="3.25" fill="#1D1D1F" />
+      <rect x="-326" y="76" width="115" height="5" rx="2.5" fill="#0071E3" fill-opacity="0.75" />
+
+      <!-- Item 2 (Chat Item) -->
+      <circle cx="-348" cy="116" r="13" fill="#E1E1E6" />
+      <rect x="-326" y="109" width="60" height="6" rx="3" fill="#3A3A3C" />
+      <rect x="-326" y="119" width="95" height="5" rx="2.5" fill="#86868B" fill-opacity="0.6" />
+
+      <!-- Right Main Chat Area Mock -->
+      <!-- Message Bubble 1 (Incoming) -->
+      <rect x="-115" y="60" width="240" height="32" rx="10" fill="#F2F2F7" />
+      <rect x="-103" y="71" width="180" height="5.5" rx="2.75" fill="#3A3A3C" fill-opacity="0.8" />
+      <text x="105" y="81" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif" font-size="9" font-weight="500" fill="#86868B">12:40</text>
+
+      <!-- Message Bubble 2 (Outgoing / Rekogram Blue) -->
+      <rect x="140" y="100" width="220" height="32" rx="10" fill="#0071E3" />
+      <rect x="154" y="111" width="160" height="5.5" rx="2.75" fill="#FFFFFF" fill-opacity="0.95" />
+      <path d="M 342 121 L 345 124 L 350 118" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
   </g>
 
-  <!-- Central Emblem / Monogram Logo -->
-  <g transform="translate(600, 115)">
-    <!-- Shield / Hexagon Shadow Backing -->
-    <circle cx="0" cy="0" r="62" fill="#1b2433" stroke="#2AABEE" stroke-width="2" stroke-opacity="0.5" />
-    <circle cx="0" cy="0" r="54" fill="#161e2b" />
+  <!-- 3. Top / Center Typography & Brand Anchor -->
+  <g transform="translate(640, 115)">
+    <!-- Small Category Eyebrow Tag -->
+    <rect x="-65" y="-14" width="130" height="26" rx="13" fill="#FFFFFF" stroke="#E5E5EA" stroke-width="1" />
+    <text x="0" y="3.5" 
+          text-anchor="middle" 
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif" 
+          font-size="11" 
+          font-weight="600" 
+          letter-spacing="0.8" 
+          fill="#0071E3">OPEN SOURCE</text>
 
-    <!-- Stylized Paper Plane & Crown Fusion -->
-    <path d="M -26 -14 L 32 -4 L -14 26 L -7 4 Z" fill="url(#primaryGlow)" />
-    <path d="M -7 4 L 32 -4 L -2 3 Z" fill="#ffffff" fill-opacity="0.9" />
+    <!-- Main Title: Rekogram -->
+    <text x="0" y="85" 
+          text-anchor="middle" 
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, sans-serif" 
+          font-size="62" 
+          font-weight="700" 
+          letter-spacing="-1.5" 
+          fill="#1D1D1F">
+      Rekogram
+    </text>
 
-    <!-- Creator Crest Mini Crown on Top of Icon -->
-    <path d="M -12 -38 L -4 -28 L 0 -36 L 4 -28 L 12 -38 L 8 -24 L -8 -24 Z" fill="url(#goldGradient)" />
-    <circle cx="-12" cy="-39" r="1.5" fill="#FFE082" />
-    <circle cx="0" cy="-37" r="1.8" fill="#FFE082" />
-    <circle cx="12" cy="-39" r="1.5" fill="#FFE082" />
-  </g>
+    <!-- Signature Subtitle Tagline -->
+    <text x="0" y="128" 
+          text-anchor="middle" 
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, sans-serif" 
+          font-size="22" 
+          font-weight="400" 
+          letter-spacing="-0.4" 
+          fill="#86868B">
+      Telegram, reimagined.
+    </text>
 
-  <!-- Title: REKOGRAM -->
-  <text x="600" y="240" 
-        text-anchor="middle" 
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
-        font-size="44" 
-        font-weight="800" 
-        letter-spacing="9" 
-        fill="#FFFFFF">
-    REKOGRAM
-  </text>
-
-  <!-- Subtitle Tagline -->
-  <text x="600" y="278" 
-        text-anchor="middle" 
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
-        font-size="16" 
-        font-weight="500" 
-        letter-spacing="2" 
-        fill="#2AABEE">
-    ADVANCED DESKTOP CLIENT BASED ON TELEGRAM
-  </text>
-
-  <!-- Core Highlights / Badges Bar -->
-  <g transform="translate(600, 340)">
-    <!-- Pill 1 -->
-    <g transform="translate(-250, 0)">
-      <rect x="-80" y="-18" width="160" height="36" rx="18" fill="#1b2535" stroke="#2AABEE" stroke-width="1" stroke-opacity="0.3" />
-      <text x="0" y="5" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#E0E6ED">⚡ C++20 &amp; Qt6</text>
-    </g>
-
-    <!-- Pill 2 -->
-    <g transform="translate(0, 0)">
-      <rect x="-80" y="-18" width="160" height="36" rx="18" fill="#1b2535" stroke="#7362F2" stroke-width="1" stroke-opacity="0.4" />
-      <text x="0" y="5" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#E0E6ED">🔒 Native MTProto</text>
-    </g>
-
-    <!-- Pill 3 -->
-    <g transform="translate(250, 0)">
-      <rect x="-80" y="-18" width="160" height="36" rx="18" fill="#1b2535" stroke="#FFD54F" stroke-width="1" stroke-opacity="0.3" />
-      <text x="0" y="5" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#E0E6ED">🎨 Seamless Design</text>
-    </g>
+    <!-- Subtle Technical Spec Anchor -->
+    <text x="0" y="162" 
+          text-anchor="middle" 
+          font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif" 
+          font-size="13" 
+          font-weight="500" 
+          letter-spacing="0.2" 
+          fill="#A1A1A6">
+      Native C++20  ·  Qt 6  ·  Pure Telegram Desktop Architecture
+    </text>
   </g>
 </svg>

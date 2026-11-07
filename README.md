@@ -4,224 +4,201 @@
 
 # Rekogram Desktop
 
-**Высокопроизводительный форк Telegram Desktop нового поколения.**  
-*Расширенная персонализация, интеллектуальные инструменты и верность оригинальной дизайн-системе Telegram.*
+**Telegram, reimagined.**  
+*Native C++20 desktop client with refined customization, advanced productivity tools, and full fidelity to Telegram Desktop.*
 
 <p align="center">
   <a href="https://github.com/vdyplesosiska2026-ux/Rekogram/releases">
-    <img src="https://img.shields.io/badge/Release-1.0.0--dev-2AABEE?style=flat-square&logo=github" alt="Release" />
+    <img src="https://img.shields.io/badge/Release-1.0.0--dev-0071E3?style=flat-square" alt="Release" />
   </a>
   <a href="https://github.com/vdyplesosiska2026-ux/Rekogram">
-    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-229ED9?style=flat-square&logo=windows" alt="Platform" />
+    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-1D1D1F?style=flat-square" alt="Platform" />
   </a>
   <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-GPLv3%20with%20OpenSSL-4CAF50?style=flat-square" alt="License" />
+    <img src="https://img.shields.io/badge/License-GPLv3%20with%20OpenSSL-34C759?style=flat-square" alt="License" />
   </a>
   <a href="https://github.com/telegramdesktop/tdesktop">
-    <img src="https://img.shields.io/badge/Base-Telegram%20Desktop%207.4.1-7362F2?style=flat-square&logo=telegram" alt="Base" />
+    <img src="https://img.shields.io/badge/Base-Telegram%20Desktop%207.4.1-5856D6?style=flat-square" alt="Base" />
   </a>
   <a href="https://isocpp.org/">
-    <img src="https://img.shields.io/badge/Standard-C%2B%2B20-00599C?style=flat-square&logo=c%2B%2B" alt="C++20" />
+    <img src="https://img.shields.io/badge/Standard-C%2B%2B20-0071E3?style=flat-square" alt="C++20" />
   </a>
 </p>
 
-[О проекте](#-о-проекте) • [Возможности](#-особенности-rekogram) • [Скриншоты](#-галерея-интерфейса) • [Стек](#-технологический-стек) • [Сборка](#-инструкция-по-сборке) • [Разработка](#-разработка) • [Roadmap](#-планы-развития-roadmap) • [Безопасность](#-безопасность) • [Лицензия](#-лицензия-и-авторские-права)
+[About](#about-rekogram) • [Features](#features) • [Interface Preview](#interface-preview) • [Tech Stack](#technology-stack) • [Installation](#installation) • [Development](#development) • [Roadmap](#roadmap) • [Security](#security) • [License](#license--credits)
 
 ---
 
 </div>
 
-## 📖 О проекте
+## About Rekogram
 
-**Rekogram Desktop** — это независимый форк официального клиента [Telegram Desktop](https://github.com/telegramdesktop/tdesktop), созданный для тех, кому необходим расширенный контроль над интерфейсом, сообщениями, заметками и персонализацией, без нарушения стабильности и без ухода от привычной визуальной среды.
+**Rekogram Desktop** is an independent fork of the official [Telegram Desktop](https://github.com/telegramdesktop/tdesktop) messenger client. It delivers enhanced workflow enhancements, message organization, and interface tailoring while strictly preserving the integrity, visual harmony, and cryptographic security of the official Telegram client.
 
-### 🎯 Ключевые ценности
-1. **100% сохранение нативного дизайна Telegram**: никакого чуждого визуала из Slack, Discord или браузерных мессенджеров. Все новые возможности используют оригинальные компоненты интерфейса (`Ui::VerticalLayout`, `Ui::Checkbox`, `Ui::PopupMenu`, палитры `.style`).
-2. **Чистая и надёжная интеграция**: функции не переписывают существующую архитектуру без необходимости, гарантируя работу всех оригинальных возможностей Telegram (звонки, истории, каналы, секретные чаты, реакции).
-3. **Безопасность MTProto**: полное соответствие стандартам Telegram API. Никаких изменений сетевых протоколов шифрования и передачи данных.
-4. **Реальная кодовая база**: исключены любые фиктивные переключатели и декоративные заглушки. Каждая опция подкреплена реальным кодом и сохранением состояния.
-
----
-
-## ⚡ Особенности Rekogram
-
-Все функции разделены на категории и имеют строго зафиксированный статус готовности в кодовой базе.
-
-### 🎨 Кастомизация и оформление
-| Возможность | Описание | Статус |
-| :--- | :--- | :---: |
-| **Rekogram Settings** | Самостоятельный раздел в меню настроек, визуально отделённый от стандартного списка опций Telegram. | `Implemented` |
-| **Rekogram Themes** | Быстрое и безопасное переключение тёмного/светлого оформления с подтверждением и выбором фона чата. | `Implemented` |
-| **Advanced Chat List** | Компактный режим отображения списка диалогов и тонкая настройка визуальной плотности строк. | `Implemented` |
-| **Advanced Theme Editor** | Экспорт, импорт и глубокая кастомизация палитр оформления сообщений. | `In Progress` |
-
-### 🛠 Продуктивность и управление сообщениями
-| Возможность | Описание | Статус |
-| :--- | :--- | :---: |
-| **Rekogram Bookmarks** | Быстрое сохранение важных сообщений в локальные закладки прямо из контекстного меню переписки. | `Implemented` |
-| **Message Reminders** | Встроенный таймер и планировщик локальных напоминаний о сообщениях из контекстного меню. | `Implemented` |
-| **Rekogram Shortcuts** | Прямой доступ к управлению и переназначению клавиатурных комбинаций клиента. | `Implemented` |
-| **Settings Backup** | Надёжный экспорт и импорт пользовательской конфигурации Rekogram в формате JSON. | `Implemented` |
-| **Advanced Folders** | Дополнительная кастомизация вкладок и папок чатов. | `Planned` |
-
-### 👑 Идентичность и Интеллектуальный интерфейс
-| Возможность | Описание | Статус |
-| :--- | :--- | :---: |
-| **Creator Badge** | Централизованная идентификация владельца по `OWNER_ID` и отображение символа создателя слева от ника. | `Implemented` |
-| **Interface Lab** | Режим разработчика и переключатель экспериментальных возможностей интерфейса. | `Implemented` |
-| **Rekogram AI Chat** | Архитектура изолированного AI-диалога в оригинальном дизайне переписки Telegram. | `Implemented (Demo/Arch)` |
-| **Rekogram Hub** | Полный информационный центр с данными о сборке, авторстве, лицензиях и GitHub-релизах. | `Implemented` |
-| **Rekogram Updater** | Система проверки новых релизов на GitHub Releases. | `Planned` |
+### Core Principles
+- **Design Authenticity**: No alien interface paradigms or third-party styles. Every screen, button, and menu follows Telegram's native Qt/C++ component architecture.
+- **Architectural Stability**: All core messaging, voice calls, stories, and MTProto 2.0 primitives remain authentic and reliable.
+- **No Non-Functional Elements**: Every preference and setting is wired to persistent local storage with backward-compatible serialization.
 
 ---
 
-## 🖼 Галерея интерфейса
+## Features
 
-Все скриншоты создаются исключительно в рабочей сборке приложения. По мере публикации релизных сборок изображения размещаются в директории [`assets/screenshots/`](assets/screenshots/):
+### Appearance & Customization
+| Capability | Description | Status |
+| :--- | :--- | :---: |
+| **Rekogram Settings** | Dedicated preference panel accessible directly from the primary settings hierarchy. | `Implemented` |
+| **Themes & Night Mode** | Seamless light/dark palette switching, background selection, and single-click default restore. | `Implemented` |
+| **Advanced Chat List** | Compact row density mode and configurable layout margins. | `Implemented` |
+| **Advanced Theme Editor** | Granular palette fine-tuning with export/import support. | `In Progress` |
+
+### Productivity & Tools
+| Capability | Description | Status |
+| :--- | :--- | :---: |
+| **Rekogram Bookmarks** | Dedicated message bookmarking accessible directly from message context menus. | `Implemented` |
+| **Message Reminders** | Timed message reminders scheduled from message action menus with local notifications. | `Implemented` |
+| **Shortcuts Manager** | Direct access to keyboard shortcut inspection and configuration. | `Implemented` |
+| **Settings Backup** | Schema-validated JSON export and import for user configurations. | `Implemented` |
+| **Advanced Folders** | Enhanced folder reordering and custom display attributes. | `Planned` |
+
+### Identity & Intelligence
+| Capability | Description | Status |
+| :--- | :--- | :---: |
+| **Creator Badge** | Centralized `OWNER_ID` verification with a distinctive crest rendered next to the creator's name. | `Implemented` |
+| **Interface Lab** | Developer mode toggle for previewing experimental interface features. | `Implemented` |
+| **Rekogram AI Chat** | Clean conversation interface ready for pluggable AI provider backends. | `Implemented (Demo/Arch)` |
+| **Rekogram Hub** | Complete version identity, release links, and open-source attribution. | `Implemented` |
+| **Rekogram Updater** | Seamless GitHub Releases update checker. | `Planned` |
+
+---
+
+## Interface Preview
+
+Official screenshots are maintained in the repository under [`assets/screenshots/`](assets/screenshots/):
 
 <div align="center">
 
-| Главный экран и список чатов | Раздел настроек Rekogram |
+| Main Conversation & Sidebar | Rekogram Settings Section |
 | :---: | :---: |
-| _[ assets/screenshots/main-window.png ]_ | _[ assets/screenshots/rekogram-settings.png ]_ |
+| _[ `assets/screenshots/main-window.png` ]_ | _[ `assets/screenshots/rekogram-settings.png` ]_ |
 
-| Значок создателя (Creator Badge) | Закладки и контекстное меню |
+| Creator Crest & Header | Context Menu Bookmarks |
 | :---: | :---: |
-| _[ assets/screenshots/creator-badge.png ]_ | _[ assets/screenshots/bookmarks.png ]_ |
+| _[ `assets/screenshots/creator-badge.png` ]_ | _[ `assets/screenshots/bookmarks.png` ]_ |
 
 </div>
 
 ---
 
-## 💻 Технологический стек
+## Technology Stack
 
-Кодовая база Rekogram опирается на передовые индустриальные стандарты C++:
-
-- **Язык**: `C++20` (модульная архитектура, `concepts`, современные стандартные библиотеки).
-- **GUI-фреймворк**: `Qt 6` / `Qt 5.15` (с оптимизированными форками библиотеки `desktop-app`).
-- **Рендеринг**: QRhi, OpenGL, ANGLE, DirectX 11/12, Vulkan, Metal.
-- **Сетевой протокол**: Telegram MTProto 2.0 (клиентская реализация сетевого уровня).
-- **Мультимедиа**: WebRTC (`tg_owt`), FFmpeg, OpenSSL 3.x, zlib, liblzma.
-- **Сборка**: CMake 3.16+, Ninja, Visual Studio 2022 (MSVC) / GCC / Clang.
+- **Core**: Modern C++20 standard
+- **UI Framework**: Qt 6 / Qt 5.15 with desktop-app hardware-accelerated rendering pipelines
+- **Networking**: Official Telegram MTProto 2.0 client implementation
+- **Media**: WebRTC (`tg_owt`), FFmpeg, OpenSSL 3.x, zlib, liblzma
+- **Build Infrastructure**: CMake 3.16+, Ninja, MSVC 2022 / Clang / GCC
 
 ---
 
-## 📥 Инструкция по сборке
+## Installation
 
-Для самостоятельной сборки Rekogram Desktop из исходного кода используйте стандартное окружение сборки Telegram Desktop:
+### Building on Windows (64-bit)
 
-### 1. Подготовка окружения (Windows 64-bit)
-1. Установите **Visual Studio 2022** (с пакетом инструментов *Разработка классических приложений на C++*).
-2. Подготовьте зависимые библиотеки в соседнем каталоге:
+1. Install **Visual Studio 2022** with the *Desktop development with C++* workload.
+2. Ensure dependencies are present in sibling directory structure:
    ```text
    L:\Telegram\
-   ├── tdesktop\               # Этот репозиторий (Rekogram)
-   ├── win64\Libraries\        # Скомпилированные 64-bit библиотеки
-   └── ThirdParty\             # Инструменты сборки (Python, CMake, NASM)
+   ├── tdesktop\               # Repository root (Rekogram)
+   ├── win64\Libraries\        # Pre-built 64-bit dependencies
+   └── ThirdParty\             # Build tools (Python, CMake, NASM)
    ```
-3. Запустите консоль **x64 Native Tools Command Prompt for VS 2022**.
+3. Open **x64 Native Tools Command Prompt for VS 2022**.
+4. Clone and compile:
+   ```cmd
+   git clone https://github.com/vdyplesosiska2026-ux/Rekogram.git
+   cd Rekogram
+   cmake -B out -G "Ninja" -DCMAKE_BUILD_TYPE=Debug
+   cmake --build out --config Debug --target Telegram
+   ```
 
-### 2. Клонирование и настройка
-```cmd
-git clone https://github.com/vdyplesosiska2026-ux/Rekogram.git
-cd Rekogram
-```
-
-### 3. Компиляция
-```cmd
-cmake -B out -G "Ninja" -DCMAKE_BUILD_TYPE=Debug
-cmake --build out --config Debug --target Telegram
-```
-*Исполняемый файл появится по пути `out/Debug/Telegram.exe` (или `Rekogram.exe`).*
-
-> [!NOTE]  
-> Подробные инструкции по подготовке зависимостей и сборке под Linux и macOS смотрите в документации [`docs/building-win.md`](docs/building-win.md) и [`docs/building-linux.md`](docs/building-linux.md).
+*Refer to [`docs/building-win.md`](docs/building-win.md) and [`docs/building-linux.md`](docs/building-linux.md) for platform prerequisites.*
 
 ---
 
-## 🛠 Разработка
+## Development
 
-Мы приветствуем соблюдение чистоты архитектуры:
-- Все новые компоненты Rekogram размещаются в каталоге `Telegram/SourceFiles/rekogram/`.
-- Новые страницы настроек интегрируются через `Telegram/SourceFiles/settings/sections/`.
-- Подробные правила контрибьюторов описаны в файле [CONTRIBUTING.md](CONTRIBUTING.md).
-
-### Соглашение об именовании коммитов
-- `feat(...)`: добавление новой функциональности;
-- `fix(...)`: исправление ошибок;
-- `rebrand(...)`: обновление айдентики и названий;
-- `docs(...)`: обновление документации.
+- Source contributions must follow standard Telegram Desktop conventions (UTF-8 without BOM, CRLF on Windows).
+- New Rekogram modules reside in `Telegram/SourceFiles/rekogram/`.
+- Review [CONTRIBUTING.md](CONTRIBUTING.md) for full patch submission guidelines.
 
 ---
 
-## 🗺 Планы развития (Roadmap)
+## Roadmap
 
 ```mermaid
 flowchart LR
     A["v1.0.0-dev: Foundation"] --> B["v1.1.0: Advanced UX"]
     B --> C["v1.2.0: AI Engine Integration"]
 
-    subgraph A["Выполнено (Completed)"]
+    subgraph A["Completed"]
         direction TB
-        A1["Базовый ребрендинг в Rekogram"]
-        A2["Раздел «Настройки Rekogram»"]
-        A3["Creator Badge система (OWNER_ID)"]
-        A4["Закладки сообщений (Bookmarks)"]
-        A5["Напоминания о сообщениях (Reminders)"]
-        A6["Резервная копия настроек в JSON"]
+        A1["Branding & version architecture"]
+        A2["Dedicated Rekogram Settings"]
+        A3["Creator Badge with OWNER_ID"]
+        A4["Message Bookmarks"]
+        A5["Message Reminders"]
+        A6["JSON Settings Backup"]
     end
 
-    subgraph B["В процессе (In Progress)"]
+    subgraph B["In Progress"]
         direction TB
-        B1["Расширенный редактор палитры тем"]
-        B2["Управление папками чатов"]
-        B3["Слайдер скругления аватаров"]
+        B1["Advanced theme palette editor"]
+        B2["Folder customization options"]
+        B3["Avatar rounding controls"]
     end
 
-    subgraph C["Запланировано (Planned)"]
+    subgraph C["Planned"]
         direction TB
-        C1["Подключение внешних LLM API к AI Chat"]
-        C2["Автоматический апдейтер через GitHub Releases"]
+        C1["External AI provider backend"]
+        C2["GitHub Releases updater"]
     end
 ```
 
 ---
 
-## 📜 История изменений (Changelog)
+## Changelog
 
-- **v1.0.0-dev** (текущая версия):
-  - Полноценная инициализация репозитория Rekogram.
-  - Интеграция секции настроек `Settings::RekogramSection`.
-  - Модули `BookmarksManager`, `RemindersManager`, `BackupManager`.
-  - Архитектура `AIChatManager` с демо-режимом переписки.
-  - Централизованный рендеринг `Creator Badge`.
+- **v1.0.0-dev**:
+  - Initial repository setup and complete branding.
+  - Implemented `BookmarksManager`, `RemindersManager`, and `BackupManager`.
+  - Added native context menu hooks in `history_view_context_menu.cpp`.
+  - Integrated `Settings::RekogramSection` in `settings_rekogram.cpp`.
+  - Added `AIChatManager` architecture with local demo persistence.
 
-*Подробную историю изменений смотрите в файле [CHANGELOG.md](CHANGELOG.md).*
-
----
-
-## 🔒 Безопасность
-
-Проект придерживается строгой политики приватности данных:
-- В репозитории не хранятся и никогда не публикуются персональные токены, пароли, секретные ключи или рабочие `API_ID` / `API_HASH`.
-- Конфигурационный параметр `OWNER_ID` отвечает исключительно за декоративное отображение значка создателя в интерфейсе и не предоставляет привилегий доступа к чужим сессиям.
-- При обнаружении уязвимостей безопасности создавайте приватный Security Advisory через GitHub.
+*Full revision history is documented in [CHANGELOG.md](CHANGELOG.md).*
 
 ---
 
-## ⚖ Лицензия и авторские права
+## Security
 
-Проект **Rekogram Desktop** лицензирован на условиях **GNU General Public License v3.0 with OpenSSL Exception**.
+- No personal credentials, tokens, or private keys are tracked in this repository.
+- `OWNER_ID` configuration is purely an interface decoration mechanism and grants no administrative Telegram session rights.
+- Report any security vulnerabilities through private GitHub Security Advisories.
 
-- **Telegram Desktop**: Copyright (c) 2014-2026 Telegram Desktop authors.  
-  Официальный репозиторий: [github.com/telegramdesktop/tdesktop](https://github.com/telegramdesktop/tdesktop)
-- **Rekogram**: Развивается как открытый форк.
+---
+
+## License & Credits
+
+**Rekogram Desktop** is licensed under the **GNU General Public License v3.0 with OpenSSL Exception**. See [LICENSE](LICENSE) for details.
+
+- Based on **Telegram Desktop**: Copyright (c) 2014-2026 Telegram Desktop authors.  
+  Official repository: [github.com/telegramdesktop/tdesktop](https://github.com/telegramdesktop/tdesktop)
 
 ---
 
 <div align="center">
 
-**[Rekogram Desktop GitHub Repository](https://github.com/vdyplesosiska2026-ux/Rekogram)**  
-*Crafted with precision for the modern desktop.*
+**[Rekogram Desktop on GitHub](https://github.com/vdyplesosiska2026-ux/Rekogram)**  
+*Telegram, reimagined.*
 
 </div>
