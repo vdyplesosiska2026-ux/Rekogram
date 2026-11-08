@@ -42,6 +42,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "settings/sections/settings_advanced.h"
 #include "settings/sections/settings_calls.h"
 #include "settings/sections/settings_information.h"
+#include "settings/sections/settings_rekogram.h"
 #include "storage/localstorage.h"
 #include "storage/storage_account.h"
 #include "support/support_templates.h"
@@ -772,6 +773,13 @@ void MainMenu::setupMenu() {
 		{ &st::menuIconSettings }
 	)->setClickedCallback([=] {
 		controller->showSettings();
+	});
+
+	addAction(
+		rpl::single(QString::fromUtf8("Настройки Rekogram")),
+		{ &st::menuIconSettings }
+	)->setClickedCallback([=] {
+		controller->showSettings(Settings::RekogramId());
 	});
 
 	_nightThemeToggle = addAction(

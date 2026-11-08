@@ -168,6 +168,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "mtproto/mtproto_config.h"
 #include "lang/lang_keys.h"
 #include "settings/business/settings_quick_replies.h"
+#include "rekogram/rekogram_quick_replies.h"
 #include "settings/settings_credits_graphics.h"
 #include "storage/localimageloader.h"
 #include "storage/storage_account.h"
@@ -5913,6 +5914,16 @@ void HistoryWidget::send(Api::SendOptions options) {
 	} else if (const auto page = shownRichMessage()) {
 		sendRichDraft(page, options);
 		return;
+	}
+	if (_field) {
+		const auto currentText = _field->getTextWithAppliedMarkdown();
+		const auto trimmed = currentText.text.trimmed();
+		if (trimmed.startsWith('!')) {
+			const auto expanded = Rekogram::QuickRepliesManager::Instance().findText(trimmed);
+			if (!expanded.isEmpty()) {
+				_field->setTextWithTags({ expanded });
+			}
+		}
 	}
 	if (!options.scheduled) {
 		auto action = Api::SendAction(_history, options);

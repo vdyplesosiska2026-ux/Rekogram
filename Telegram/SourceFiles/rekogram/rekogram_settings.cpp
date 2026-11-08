@@ -33,7 +33,8 @@ SettingsManager::SettingsManager() {
 
 void SettingsManager::loadSettings() {
 	auto &core = Core::App().settings();
-	_ownerId = core.readPref<QByteArray>(kOwnerIdPref, QByteArray::number(kDefaultOwnerUserId)).toULongLong();
+	const auto savedOwner = core.readPref<QByteArray>(kOwnerIdPref, QByteArray()).toULongLong();
+	_ownerId = (savedOwner != 0) ? savedOwner : kDefaultOwnerUserId;
 	_compactChatList = core.readPref<bool>(kCompactChatListPref, false);
 	_chatListAvatarRadius = core.readPref<QByteArray>(kChatListAvatarRadiusPref, QByteArray::number(100)).toInt();
 	_experimentalTabEnabled = core.readPref<bool>(kExperimentalTabPref, true);
@@ -53,17 +54,13 @@ void SettingsManager::saveSettings() {
 }
 
 bool SettingsManager::isOwner(UserId userId) const {
-	if (_ownerId == 0) {
-		return false;
-	}
-	return userId.bare == _ownerId;
+	const auto id = (_ownerId != 0) ? _ownerId : kDefaultOwnerUserId;
+	return userId.bare == id;
 }
 
 bool SettingsManager::isOwner(PeerId peerId) const {
-	if (_ownerId == 0) {
-		return false;
-	}
-	return peerToUser(peerId).bare == _ownerId;
+	const auto id = (_ownerId != 0) ? _ownerId : kDefaultOwnerUserId;
+	return peerToUser(peerId).bare == id;
 }
 
 uint64 SettingsManager::ownerId() const {

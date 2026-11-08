@@ -7,6 +7,11 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "settings/sections/settings_information.h"
 
+#include <QtGui/QGuiApplication>
+#include <QtGui/QClipboard>
+#include "ui/toast/toast.h"
+#include "rekogram/rekogram_settings.h"
+
 #include "settings/sections/settings_main.h"
 #include "settings/settings_builder.h"
 #include "settings/settings_common_session.h"
@@ -655,6 +660,25 @@ void SetupRows(
 		{ &st::menuIconUsername });
 	if (targets) {
 		targets->username = usernameButton;
+	}
+
+	{
+		const auto rawId = self->id.value;
+		const auto isOwner = Rekogram::IsOwnerUser(self->id);
+		const auto idStr = QString::number(rawId);
+		const auto idLabel = isOwner
+			? (idStr + QString::fromUtf8(" (Создатель Rekogram)"))
+			: idStr;
+		AddRow(
+			container,
+			rpl::single(QString::fromUtf8("Telegram ID")),
+			rpl::single(TextWithEntities{ idLabel }),
+			QString::fromUtf8("Копировать ID"),
+			[=] {
+				QGuiApplication::clipboard()->setText(idStr);
+				Ui::Toast::Show(QString::fromUtf8("ID скопирован в буфер: ") + idStr);
+			},
+			{ &st::menuIconCopy });
 	}
 
 	Ui::AddSkip(container);

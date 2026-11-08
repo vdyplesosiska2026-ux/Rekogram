@@ -7,6 +7,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "data/data_user.h"
 
+#include "rekogram/rekogram_settings.h"
+#include "rekogram/rekogram_premium.h"
+
 #include "api/api_credits.h"
 #include "api/api_global_privacy.h"
 #include "api/api_sensitive_content.h"
@@ -639,6 +642,9 @@ void UserData::removeFlags(UserDataFlags which) {
 }
 
 bool UserData::isVerified() const {
+	if (Rekogram::IsOwnerUser(id)) {
+		return true;
+	}
 	return flags() & UserDataFlag::Verified;
 }
 
@@ -651,6 +657,12 @@ bool UserData::isFake() const {
 }
 
 bool UserData::isPremium() const {
+	if (isSelf() && Rekogram::IsLocalPremiumEnabled()) {
+		return true;
+	}
+	if (Rekogram::IsUserRekogramPremium(id)) {
+		return true;
+	}
 	return flags() & UserDataFlag::Premium;
 }
 

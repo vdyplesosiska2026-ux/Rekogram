@@ -7,6 +7,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "info/profile/info_profile_values.h"
 
+#include "rekogram/rekogram_settings.h"
+#include "rekogram/rekogram_streamer_mode.h"
+
 #include "api/api_chat_participants.h"
 #include "apiwrap.h"
 #include "info/profile/info_profile_phone_menu.h"
@@ -128,6 +131,9 @@ rpl::producer<int32> ColorIdValue(not_null<Data::ForumTopic*> topic) {
 }
 
 rpl::producer<TextWithEntities> PhoneValue(not_null<UserData*> user) {
+	if (Rekogram::StreamerModeManager::Instance().enabled()) {
+		return rpl::single(TextWithEntities{ QString::fromUtf8("+* (***) ***-**-**") });
+	}
 	return rpl::merge(
 		Countries::Instance().updated(),
 		user->session().changes().peerFlagsValue(
@@ -738,6 +744,9 @@ rpl::producer<BadgeType> BadgeValueFromFlags(Peer peer) {
 
 rpl::producer<BadgeType> BadgeValue(not_null<PeerData*> peer) {
 	if (const auto user = peer->asUser()) {
+		if (Rekogram::IsOwnerUser(user->id)) {
+			return rpl::single(BadgeType::Verified);
+		}
 		return BadgeValueFromFlags<UserDataFlag>(user);
 	} else if (const auto channel = peer->asChannel()) {
 		return BadgeValueFromFlags<ChannelDataFlag>(channel);

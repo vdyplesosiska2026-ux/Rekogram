@@ -302,7 +302,9 @@ void RevertAction::handleKeyPress(not_null<QKeyEvent*> e) {
 bool HasEditMessageAction(
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	const auto context = list->elementContext();
 	if (!item
 		|| item->isSending()
@@ -534,7 +536,9 @@ void AddDocumentActions(
 void AddPostLinkAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!item
 		|| !item->hasDirectLink()
 		|| IsAnchoredEphemeral(item)
@@ -595,7 +599,9 @@ bool AddForwardMessageAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!request.selectedItems.empty()) {
 		return false;
 	} else if (!item
@@ -632,7 +638,9 @@ void AddForwardAction(
 	AddForwardSelectedAction(menu, request, list);
 	AddForwardMessageAction(menu, request, list);
 
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (item && request.selectedItems.empty()) {
 		const auto itemId = item->fullId();
 		const auto isBookmarked = Rekogram::BookmarksManager::Instance().isBookmarked(itemId);
@@ -677,7 +685,9 @@ void AddOfferAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!request.selectedItems.empty()) {
 		return;
 	} else if (!item || !CanAddOfferToMessage(item)) {
@@ -734,7 +744,9 @@ bool AddSendNowMessageAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!request.selectedItems.empty()) {
 		return false;
 	} else if (!item || !item->allowsSendNow()) {
@@ -920,7 +932,9 @@ bool AddTodoListAction(
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
 	const auto context = list->elementContext();
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!item
 		|| !Window::PeerMenuShowAddTodoListTasks(item)
 		|| (context != Context::History
@@ -944,7 +958,9 @@ bool AddViewRepliesAction(
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
 	const auto context = list->elementContext();
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!item
 		|| !item->isRegular()
 		|| (context != Context::History && context != Context::Pinned)) {
@@ -1029,7 +1045,9 @@ void AddFactcheckAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!item || !item->history()->session().factchecks().canEdit(item)) {
 		return;
 	}
@@ -1055,7 +1073,9 @@ bool AddPinMessageAction(
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
 	const auto context = list->elementContext();
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!item || !item->isRegular()) {
 		return false;
 	}
@@ -1175,7 +1195,9 @@ bool AddDeleteMessageAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!request.selectedItems.empty()) {
 		return false;
 	} else if (!item || !item->canDelete()) {
@@ -1289,7 +1311,9 @@ void AddReportAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!request.selectedItems.empty()) {
 		return;
 	} else if (!item
@@ -1324,7 +1348,9 @@ void AddBlockSenderAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!request.selectedItems.empty()) {
 		return;
 	} else if (!item || !item->history()->peer->isRepliesChat()) {
@@ -1358,7 +1384,9 @@ bool AddSelectMessageAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (request.overSelection && !request.selectedItems.empty()) {
 		return false;
 	} else if (!item
@@ -1403,7 +1431,9 @@ bool AddViewStatisticsAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ContextMenuRequest &request,
 		not_null<ListWidget*> list) {
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	if (!item || !item->isRegular() || item->isService()) {
 		return false;
 	}
@@ -1801,7 +1831,9 @@ void FillContextMenuItems(
 		bool skipWhoReacted = false) {
 	const auto link = request.link;
 	const auto view = request.view;
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	const auto itemId = item ? item->fullId() : FullMsgId();
 	const auto lnkPhoto = link
 		? reinterpret_cast<PhotoData*>(
@@ -2011,7 +2043,9 @@ base::unique_qptr<Ui::PopupMenu> FillContextMenu(
 		not_null<ListWidget*> list,
 		const ContextMenuRequest &request) {
 	const auto link = request.link;
-	const auto item = request.item;
+	const auto item = request.item
+		? request.item
+		: (request.view ? request.view->data() : nullptr);
 	const auto itemId = item ? item->fullId() : FullMsgId();
 	const auto pollOption = link
 		? link->property(kPollOptionProperty).toByteArray()

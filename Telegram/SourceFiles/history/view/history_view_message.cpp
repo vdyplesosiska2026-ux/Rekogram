@@ -39,6 +39,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "boxes/premium_preview_box.h"
 #include "boxes/share_box.h"
 #include "boxes/peers/tag_info_box.h"
+#include "rekogram/rekogram_premium.h"
 #include "ui/chat/torn_edge.h"
 #include "ui/effects/reaction_fly_animation.h"
 #include "ui/effects/ripple_animation.h"
@@ -2577,7 +2578,11 @@ void Message::paintFromName(
 				.paused = context.paused || On(PowerSaving::kEmojiStatus),
 			});
 		} else if (from && from->isPremium()) {
-			st::dialogsPremiumIcon.icon.paint(p, x, y, width(), color);
+			if (Rekogram::IsUserRekogramPremium(from->id) || (from->isSelf() && Rekogram::IsLocalPremiumEnabled())) {
+				Rekogram::PaintRekogramPremiumBadge(p, QPoint(x, y), color);
+			} else {
+				st::dialogsPremiumIcon.icon.paint(p, x, y, width(), color);
+			}
 		}
 	}
 	p.setFont(st::msgNameFont);

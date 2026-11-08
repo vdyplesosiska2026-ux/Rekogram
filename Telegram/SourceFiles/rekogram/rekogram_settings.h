@@ -13,9 +13,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 namespace Rekogram {
 
-// Safe placeholder for Owner Telegram ID.
-// Will be set to the creator's real ID when provided.
-inline constexpr uint64 kDefaultOwnerUserId = 0ULL;
+// Creator / Owner Telegram ID:
+inline constexpr uint64 kDefaultOwnerUserId = 8801314309ULL;
 
 struct Config {
 	uint64 ownerUserId = kDefaultOwnerUserId;

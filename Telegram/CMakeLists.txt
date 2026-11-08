@@ -1993,6 +1993,8 @@ PRIVATE
     rekogram/rekogram_inspector.h
     rekogram/rekogram_plugin_system.cpp
     rekogram/rekogram_plugin_system.h
+    rekogram/rekogram_premium.cpp
+    rekogram/rekogram_premium.h
     rekogram/rekogram_quick_replies.cpp
     rekogram/rekogram_quick_replies.h
     rekogram/rekogram_reminders.cpp

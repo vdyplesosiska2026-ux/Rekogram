@@ -474,6 +474,14 @@ void BuildSectionButtons(SectionBuilder &builder) {
 		},
 		.keywords = { u"translate"_q, u"localization"_q, u"language"_q },
 	});
+
+	builder.addSectionButton({
+		.id = u"main/rekogram_settings"_q,
+		.title = rpl::single(QString::fromUtf8("Настройки Rekogram")),
+		.targetSection = RekogramId(),
+		.icon = { &st::menuIconSettings },
+		.keywords = { u"rekogram"_q, u"custom"_q, u"theme"_q, u"owner"_q, u"streamer"_q, u"privacy"_q },
+	});
 }
 
 void BuildInterfaceScale(SectionBuilder &builder) {
@@ -642,19 +650,6 @@ void BuildHelpSection(SectionBuilder &builder) {
 		.icon = { &st::menuIconDiscussion },
 		.onClick = [=] { OpenAskQuestionConfirm(controller); },
 		.keywords = { u"contact"_q, u"feedback"_q },
-	});
-
-	builder.addSkip();
-
-	builder.addDivider();
-	builder.addSkip();
-
-	builder.addButton({
-		.id = u"main/rekogram_settings"_q,
-		.title = rpl::single(QString::fromUtf8("Настройки Rekogram")),
-		.icon = { &st::menuIconSettings },
-		.onClick = [=] { showOther(RekogramId()); },
-		.keywords = { u"rekogram"_q, u"custom"_q, u"theme"_q, u"owner"_q },
 	});
 
 	builder.addSkip();

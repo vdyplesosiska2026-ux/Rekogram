@@ -53,6 +53,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "storage/file_download.h"
 #include "storage/storage_account.h"
 #include "storage/storage_facade.h"
+#include "rekogram/rekogram_settings.h"
 #include "storage/storage_shared_media.h"
 
 namespace {
@@ -1293,6 +1294,9 @@ not_null<const PeerData*> PeerData::userpicPaintingPeer() const {
 }
 
 Ui::PeerUserpicShape PeerData::userpicShape() const {
+	if (Rekogram::SettingsManager::Instance().avatarRadius() == 0) {
+		return Ui::PeerUserpicShape::Forum;
+	}
 	const auto channel = asChannel();
 	return (isForum() && !isBot())
 		? Ui::PeerUserpicShape::Forum

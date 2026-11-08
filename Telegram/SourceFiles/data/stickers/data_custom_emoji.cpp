@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "data/stickers/data_custom_emoji.h"
+#include "rekogram/rekogram_premium.h"
 
 #include "boxes/peers/edit_forum_topic_box.h" // MakeTopicIconEmoji.
 #include "chat_helpers/stickers_emoji_pack.h"
@@ -1046,6 +1047,9 @@ TextWithEntities SingleCustomEmoji(not_null<DocumentData*> document) {
 bool AllowEmojiWithoutPremium(
 		not_null<PeerData*> peer,
 		DocumentData *exactEmoji) {
+	if (Rekogram::IsLocalPremiumEnabled()) {
+		return true;
+	}
 	if (peer->isSelf()) {
 		return true;
 	} else if (!exactEmoji) {

@@ -16,5 +16,15 @@ class SessionController;
 namespace Settings {
 
 [[nodiscard]] Type RekogramId();
+[[nodiscard]] Type RekogramGeneralId();
+[[nodiscard]] Type RekogramAppearanceId();
+[[nodiscard]] Type RekogramPrivacyId();
+[[nodiscard]] Type RekogramChatsId();
+[[nodiscard]] Type RekogramMessagesId();
+[[nodiscard]] Type RekogramAIId();
+[[nodiscard]] Type RekogramPluginsId();
+[[nodiscard]] Type RekogramAdvancedId();
+[[nodiscard]] Type RekogramPremiumId();
+[[nodiscard]] Type RekogramAboutId();
 
 } // namespace Settings

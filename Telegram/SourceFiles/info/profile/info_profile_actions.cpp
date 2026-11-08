@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "info/profile/info_profile_actions.h"
+#include "rekogram/rekogram_settings.h"
 
 #include "api/api_blocked_peers.h"
 #include "api/api_chat_participants.h"
@@ -1779,6 +1780,43 @@ Section DetailsFiller::makeInfo() {
 		fitLabelToButton(qrButton, usernameLine.subtext, rightSkip);
 		qrButton->setClickedCallback(showQr);
 
+		{
+			const auto rawId = user->id.value;
+			const auto isOwner = Rekogram::IsOwnerUser(user->id);
+			const auto idStr = QString::number(rawId);
+			const auto idLabel = isOwner
+				? (idStr + QString::fromUtf8(" (Создатель Rekogram)"))
+				: idStr;
+			const auto idLine = addInfoOneLine(
+				rpl::single(QString::fromUtf8("Telegram ID")),
+				rpl::single(TextWithEntities{ idLabel }),
+				QString::fromUtf8("Копировать ID"),
+				st::infoProfileLabeledPadding,
+				st::popupMenuWithIcons);
+			const auto idLabelWidget = idLine.text;
+			idLabelWidget->setContextMenuHook([=](Ui::FlatLabel::ContextMenuRequest req) {
+				if (req.selection.empty()) {
+					req.menu->addAction(
+						QString::fromUtf8("Копировать ID"),
+						[=] {
+							QGuiApplication::clipboard()->setText(idStr);
+							Ui::Toast::Show(QString::fromUtf8("ID скопирован в буфер: ") + idStr);
+						},
+						&st::menuIconCopy);
+				} else {
+					idLabelWidget->fillContextMenu(req);
+				}
+			});
+			idLabelWidget->setClickHandlerFilter([=](const ClickHandlerPtr&, Qt::MouseButton button) {
+				if (button == Qt::LeftButton) {
+					QGuiApplication::clipboard()->setText(idStr);
+					Ui::Toast::Show(QString::fromUtf8("ID скопирован в буфер: ") + idStr);
+					return false;
+				}
+				return true;
+			});
+		}
+
 		if (!user->isBot()) {
 			tracker.track(result->add(
 				CreateBirthday(result, controller, user),
@@ -1871,6 +1909,39 @@ Section DetailsFiller::makeInfo() {
 			qr->setClickedCallback([=, show = controller->uiShow()] {
 				Ui::DefaultShowFillPeerQrBoxCallback(show, peer);
 				return false;
+			});
+		}
+
+		{
+			const auto rawId = _peer->id.value;
+			const auto idStr = QString::number(rawId);
+			const auto idLine = addInfoOneLine(
+				rpl::single(QString::fromUtf8("Telegram ID")),
+				rpl::single(TextWithEntities{ idStr }),
+				QString::fromUtf8("Копировать ID"),
+				st::infoProfileLabeledPadding,
+				st::popupMenuWithIcons);
+			const auto idLabelWidget = idLine.text;
+			idLabelWidget->setContextMenuHook([=](Ui::FlatLabel::ContextMenuRequest req) {
+				if (req.selection.empty()) {
+					req.menu->addAction(
+						QString::fromUtf8("Копировать ID"),
+						[=] {
+							QGuiApplication::clipboard()->setText(idStr);
+							Ui::Toast::Show(QString::fromUtf8("ID скопирован в буфер: ") + idStr);
+						},
+						&st::menuIconCopy);
+				} else {
+					idLabelWidget->fillContextMenu(req);
+				}
+			});
+			idLabelWidget->setClickHandlerFilter([=](const ClickHandlerPtr&, Qt::MouseButton button) {
+				if (button == Qt::LeftButton) {
+					QGuiApplication::clipboard()->setText(idStr);
+					Ui::Toast::Show(QString::fromUtf8("ID скопирован в буфер: ") + idStr);
+					return false;
+				}
+				return true;
 			});
 		}
 
