@@ -15,6 +15,14 @@
 - **Поддержка навигации меню**:
   - Оптимизирован переход в раздел «Настройки Rekogram» через стандартный механизм `builder.addSectionButton()`.
 
+### Исправлено
+- **Совместимость с компилятором MSVC и C++20**:
+  - Приведён порядок назначенных инициализаторов `Ui::ConfirmBoxArgs` в строгое соответствие со стандартом C++20 в `settings_rekogram.cpp` и `rekogram_inspector.cpp`.
+  - Заменено обращение `toText()` на стандартный `originalText()` у `HistoryItem` для совместимости с кодовой базой Telegram Desktop.
+  - Согласованы иконки всплывающих меню со стилевыми ресурсами темы (`menuIconRestore`, `menuIconTimer`, `menuIconShortcut`, `menuIconExportTheme`, `menuIconImportTheme`).
+  - Добавлены заголовочные файлы `QGuiApplication`, `QClipboard` и `basic_click_handlers.h` для корректной работы с буфером обмена и переходами по URL.
+  - Скорректирован вызов переключения тем `Window::Theme::ToggleNightMode()`.
+
 ---
 
 ## [1.1.0-dev] - 2026-11-08 — Expansion Update

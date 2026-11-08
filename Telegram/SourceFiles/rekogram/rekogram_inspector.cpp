@@ -21,7 +21,7 @@ MessageDetails MessageInspector::ExtractDetails(not_null<HistoryItem*> item) {
 	details.fromPeerId = item->from() ? item->from()->id : PeerId(0);
 	details.toPeerId = item->history() ? item->history()->peer->id : PeerId(0);
 	details.date = QDateTime::fromSecsSinceEpoch(item->date());
-	details.rawText = item->toText().text;
+	details.rawText = item->originalText().text;
 	return details;
 }
 
@@ -45,9 +45,9 @@ void MessageInspector::Inspect(not_null<Window::SessionController*> controller, 
 		.arg(details.rawText.left(500));
 
 	controller->show(Ui::MakeConfirmBox({
-		.title = QString::fromUtf8("Инспектор сообщения (Message Inspector)"),
 		.text = content,
 		.confirmText = QString::fromUtf8("Закрыть"),
+		.title = QString::fromUtf8("Инспектор сообщения (Message Inspector)"),
 	}));
 }
 

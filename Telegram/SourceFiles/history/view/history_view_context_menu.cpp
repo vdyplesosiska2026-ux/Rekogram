@@ -643,7 +643,7 @@ void AddForwardAction(
 				} else {
 					Rekogram::BookmarksManager::Instance().addBookmark(
 						itemId,
-						item->toText().text);
+						item->originalText().text);
 					Ui::Toast::Show(QString::fromUtf8("Сохранено в закладки Rekogram"));
 				}
 			},
@@ -654,11 +654,11 @@ void AddForwardAction(
 			[=] {
 				Rekogram::RemindersManager::Instance().addReminder(
 					itemId,
-					item->toText().text,
+					item->originalText().text,
 					QDateTime::currentDateTime().addSecs(3600)); // +1 hour reminder
 				Ui::Toast::Show(QString::fromUtf8("Напоминание установлено на 1 час"));
 			},
-			&st::menuIconHistory);
+			&st::menuIconTimer);
 
 		menu->addAction(
 			QString::fromUtf8("Инспектор сообщения (ID/Данные)"),
