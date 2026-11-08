@@ -24,6 +24,7 @@
   - Скорректирован вызов переключения тем `Window::Theme::ToggleNightMode()`.
   - Реализована точная сигнатура `SectionBuildMethod` в `RekogramSection::setupContent()` с поддержкой `HighlightRegistry` и паузы анимаций интерфейса.
   - Добавлены геттеры и сеттеры `avatarRadius` и `showCreatorBadge` в `SettingsManager`.
+  - Переведена сериализация числовых параметров `SettingsManager` на `QByteArray` для полной совместимости с механизмами `Core::Settings::writePref/readPref`.
   - Очищены лишние устаревшие зависимости в контекстном меню.
 
 ---

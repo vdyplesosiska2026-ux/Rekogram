@@ -33,9 +33,9 @@ SettingsManager::SettingsManager() {
 
 void SettingsManager::loadSettings() {
 	auto &core = Core::App().settings();
-	_ownerId = static_cast<uint64>(core.readPref<int>(kOwnerIdPref, static_cast<int>(kDefaultOwnerUserId)));
+	_ownerId = core.readPref<QByteArray>(kOwnerIdPref, QByteArray::number(kDefaultOwnerUserId)).toULongLong();
 	_compactChatList = core.readPref<bool>(kCompactChatListPref, false);
-	_chatListAvatarRadius = core.readPref<int>(kChatListAvatarRadiusPref, 100);
+	_chatListAvatarRadius = core.readPref<QByteArray>(kChatListAvatarRadiusPref, QByteArray::number(100)).toInt();
 	_experimentalTabEnabled = core.readPref<bool>(kExperimentalTabPref, true);
 	_devMode = core.readPref<bool>(kDevModePref, false);
 	const auto accentBytes = core.readPref<QByteArray>(kAccentColorPref, QByteArray());
@@ -44,9 +44,9 @@ void SettingsManager::loadSettings() {
 
 void SettingsManager::saveSettings() {
 	auto &core = Core::App().settings();
-	core.writePref<int>(kOwnerIdPref, static_cast<int>(_ownerId));
+	core.writePref<QByteArray>(kOwnerIdPref, QByteArray::number(_ownerId));
 	core.writePref<bool>(kCompactChatListPref, _compactChatList.current());
-	core.writePref<int>(kChatListAvatarRadiusPref, _chatListAvatarRadius);
+	core.writePref<QByteArray>(kChatListAvatarRadiusPref, QByteArray::number(_chatListAvatarRadius));
 	core.writePref<bool>(kExperimentalTabPref, _experimentalTabEnabled);
 	core.writePref<bool>(kDevModePref, _devMode);
 	core.writePref<QByteArray>(kAccentColorPref, _accentColorHex.toUtf8());
