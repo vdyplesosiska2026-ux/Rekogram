@@ -13,6 +13,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "boxes/background_box.h"
 #include "core/application.h"
 #include "core/version.h"
+#include "lang/lang_keys.h"
 #include "main/main_session.h"
 #include "rekogram/rekogram_ai_chat.h"
 #include "rekogram/rekogram_backup.h"
@@ -433,7 +434,25 @@ void SetupRekogramHub(SectionBuilder &builder) {
 void RekogramSection::setupContent() {
 	const auto content = Ui::CreateChild<Ui::VerticalLayout>(this);
 
-	const SectionBuildMethod buildMethod = [=](SectionBuilder &builder) {
+	const SectionBuildMethod buildMethod = [=](
+			not_null<Ui::VerticalLayout*> container,
+			not_null<Window::SessionController*> controller,
+			Fn<void(Type)> showOther,
+			rpl::producer<> showFinished) {
+		auto &lifetime = container->lifetime();
+		const auto highlights = lifetime.make_state<HighlightRegistry>();
+		const auto isPaused = Window::PausedIn(
+			controller,
+			Window::GifPauseReason::Layer);
+
+		auto builder = SectionBuilder(WidgetContext{
+			.container = container,
+			.controller = controller,
+			.showOther = std::move(showOther),
+			.isPaused = isPaused,
+			.highlights = highlights,
+		});
+
 		SetupAppearance(builder);
 		builder.addDivider();
 		builder.addSkip();

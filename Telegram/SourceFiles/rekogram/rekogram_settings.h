@@ -43,6 +43,12 @@ public:
 	[[nodiscard]] int chatListAvatarRadius() const;
 	void setChatListAvatarRadius(int radius);
 
+	[[nodiscard]] int avatarRadius() const { return chatListAvatarRadius(); }
+	void setAvatarRadius(int radius) { setChatListAvatarRadius(radius); }
+
+	[[nodiscard]] bool showCreatorBadge() const { return _showCreatorBadge; }
+	void setShowCreatorBadge(bool enabled) { _showCreatorBadge = enabled; }
+
 	[[nodiscard]] bool experimentalTabEnabled() const;
 	void setExperimentalTabEnabled(bool enabled);
 
@@ -62,6 +68,7 @@ private:
 	uint64 _ownerId = kDefaultOwnerUserId;
 	rpl::variable<bool> _compactChatList = false;
 	int _chatListAvatarRadius = 100;
+	bool _showCreatorBadge = true;
 	bool _experimentalTabEnabled = true;
 	bool _devMode = false;
 	QString _accentColorHex;

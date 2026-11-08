@@ -20,8 +20,11 @@
   - Приведён порядок назначенных инициализаторов `Ui::ConfirmBoxArgs` в строгое соответствие со стандартом C++20 в `settings_rekogram.cpp` и `rekogram_inspector.cpp`.
   - Заменено обращение `toText()` на стандартный `originalText()` у `HistoryItem` для совместимости с кодовой базой Telegram Desktop.
   - Согласованы иконки всплывающих меню со стилевыми ресурсами темы (`menuIconRestore`, `menuIconTimer`, `menuIconShortcut`, `menuIconExportTheme`, `menuIconImportTheme`).
-  - Добавлены заголовочные файлы `QGuiApplication`, `QClipboard` и `basic_click_handlers.h` для корректной работы с буфером обмена и переходами по URL.
+  - Добавлены заголовочные файлы `QGuiApplication`, `QClipboard`, `lang_keys.h` и `basic_click_handlers.h` для корректной работы с буфером обмена, локализацией и переходами по URL.
   - Скорректирован вызов переключения тем `Window::Theme::ToggleNightMode()`.
+  - Реализована точная сигнатура `SectionBuildMethod` в `RekogramSection::setupContent()` с поддержкой `HighlightRegistry` и паузы анимаций интерфейса.
+  - Добавлены геттеры и сеттеры `avatarRadius` и `showCreatorBadge` в `SettingsManager`.
+  - Очищены лишние устаревшие зависимости в контекстном меню.
 
 ---
 
