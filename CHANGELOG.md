@@ -11,7 +11,7 @@
   - Настроены прекомпилированные библиотеки и зависимости (Qt 5.15.19, WebRTC, FFmpeg, OpenSSL, MSYS2, NuGet).
   - Успешно сконфигурирован проект CMake с официальными API-ключами (`TDESKTOP_API_ID`, `TDESKTOP_API_HASH`).
   - Подключены все исходные файлы Rekogram (`rekogram/*.cpp`, `rekogram/*.h`, `settings_rekogram.*`) в целевой таргет `Telegram`.
-  - Запущен процесс первой нативной сборки исполняемого файла Rekogram для Windows x64.
+  - Успешно завершена первая нативная сборка исполняемого файла Rekogram для Windows x64 (`D:\TBuild\tdesktop\out\Debug\Telegram.exe` и алиас `Rekogram.exe`, размер ~501 МБ со статическими зависимостями).
 - **Поддержка навигации меню**:
   - Оптимизирован переход в раздел «Настройки Rekogram» через стандартный механизм `builder.addSectionButton()`.
 
