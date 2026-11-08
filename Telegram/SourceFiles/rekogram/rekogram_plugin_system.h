@@ -26,8 +26,10 @@ public:
 	static PluginManager &Instance();
 
 	[[nodiscard]] std::vector<PluginManifest> plugins() const;
+	[[nodiscard]] std::vector<PluginManifest> installedPlugins() const { return plugins(); }
 	void setPluginEnabled(const QString &id, bool enabled);
 	[[nodiscard]] bool isPluginEnabled(const QString &id) const;
+	void reloadAll() { load(); }
 
 private:
 	PluginManager();
@@ -36,5 +38,7 @@ private:
 
 	std::vector<PluginManifest> _plugins;
 };
+
+using PluginSystem = PluginManager;
 
 } // namespace Rekogram

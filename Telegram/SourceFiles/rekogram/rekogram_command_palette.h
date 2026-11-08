@@ -10,6 +10,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <QtCore/QString>
 #include <vector>
 
+namespace Window {
+class SessionController;
+} // namespace Window
+
 namespace Rekogram {
 
 struct CommandItem {
@@ -30,5 +34,11 @@ private:
 	CommandPaletteManager();
 	std::vector<CommandItem> _commands;
 };
+
+namespace CommandPalette {
+
+void Show(not_null<Window::SessionController*> controller);
+
+} // namespace CommandPalette
 
 } // namespace Rekogram

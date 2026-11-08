@@ -25,6 +25,11 @@ class AIChatManager final {
 public:
 	static AIChatManager &Instance();
 
+	[[nodiscard]] bool enabled() const { return _enabled; }
+	void setEnabled(bool val) { _enabled = val; }
+	[[nodiscard]] QString provider() const { return _provider.isEmpty() ? providerName() : _provider; }
+	void setProvider(const QString &val) { _provider = val; }
+
 	void sendMessage(const QString &text);
 	[[nodiscard]] std::vector<AIChatMessage> messages() const;
 	void clearHistory();
@@ -37,6 +42,8 @@ private:
 	void load();
 	void save();
 
+	bool _enabled = true;
+	QString _provider = QString::fromUtf8("Local (Offline)");
 	std::vector<AIChatMessage> _messages;
 };
 

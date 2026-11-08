@@ -77,6 +77,10 @@ private:
 	return SettingsManager::Instance().isOwner(userId);
 }
 
+[[nodiscard]] inline bool IsOwnerUser(PeerId peerId) {
+	return SettingsManager::Instance().isOwner(peerId);
+}
+
 [[nodiscard]] inline bool IsOwnerPeer(PeerId peerId) {
 	return SettingsManager::Instance().isOwner(peerId);
 }

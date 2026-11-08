@@ -476,7 +476,6 @@ void BuildSectionButtons(SectionBuilder &builder) {
 	});
 
 	builder.addSectionButton({
-		.id = u"main/rekogram_settings"_q,
 		.title = rpl::single(QString::fromUtf8("Настройки Rekogram")),
 		.targetSection = RekogramId(),
 		.icon = { &st::menuIconSettings },

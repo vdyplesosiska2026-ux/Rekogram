@@ -9,6 +9,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "rekogram/rekogram_settings.h"
 #include "core/application.h"
 #include "core/core_settings.h"
+#include "ui/painter.h"
 #include <QtGui/QPainterPath>
 
 namespace Rekogram {

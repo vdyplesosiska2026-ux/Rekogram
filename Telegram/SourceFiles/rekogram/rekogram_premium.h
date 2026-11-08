@@ -58,11 +58,22 @@ private:
 	return PremiumManager::Instance().isPremium(userId);
 }
 
+[[nodiscard]] inline bool IsUserRekogramPremium(PeerId peerId) {
+	return PremiumManager::Instance().isPremium(peerId);
+}
+
 void PaintRekogramPremiumBadge(
 	QPainter &p,
 	QPoint pos,
 	int fontHeight,
 	QColor color = QColor(140, 90, 240));
+
+inline void PaintRekogramPremiumBadge(
+	QPainter &p,
+	QPoint pos,
+	QColor color = QColor(140, 90, 240)) {
+	PaintRekogramPremiumBadge(p, pos, 16, color);
+}
 
 [[nodiscard]] int RekogramPremiumBadgeWidth();
 

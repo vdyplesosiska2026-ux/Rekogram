@@ -6,6 +6,8 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "rekogram/rekogram_command_palette.h"
+#include "window/window_session_controller.h"
+#include "ui/boxes/confirm_box.h"
 
 namespace Rekogram {
 
@@ -43,5 +45,25 @@ std::vector<CommandItem> CommandPaletteManager::search(const QString &query) con
 	}
 	return result;
 }
+
+namespace CommandPalette {
+
+void Show(not_null<Window::SessionController*> controller) {
+	QString text = QString::fromUtf8("Палитра быстрых команд Rekogram:\n\n");
+	for (const auto &cmd : CommandPaletteManager::Instance().commands()) {
+		text += u"• "_q + cmd.title;
+		if (!cmd.shortcut.isEmpty()) {
+			text += u" ("_q + cmd.shortcut + u")"_q;
+		}
+		text += u"\n"_q;
+	}
+	controller->show(Ui::MakeConfirmBox({
+		.text = text,
+		.confirmText = QString::fromUtf8("Закрыть"),
+		.title = QString::fromUtf8("Палитра команд"),
+	}));
+}
+
+} // namespace CommandPalette
 
 } // namespace Rekogram
