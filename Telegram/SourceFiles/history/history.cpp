@@ -3451,6 +3451,9 @@ bool History::useTopPromotion() const {
 }
 
 int History::fixedOnTopIndex() const {
+	if (peer->id == PeerData::kRekogramAIAssistantId) {
+		return kRekogramAIFixOnTopIndex;
+	}
 	return useTopPromotion() ? kTopPromotionFixOnTopIndex : 0;
 }
 
@@ -3462,6 +3465,9 @@ bool History::trackUnreadMessages() const {
 }
 
 bool History::shouldBeInChatList() const {
+	if (peer->id == PeerData::kRekogramAIAssistantId) {
+		return true;
+	}
 	if (peer->migrateTo() || !folderKnown()) {
 		return false;
 	} else if (const auto community = peer->asChannel()

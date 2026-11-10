@@ -73,6 +73,19 @@ public:
 	void setTimestampFormat(TimestampFormat format);
 	[[nodiscard]] QString formatTime(const QTime &time) const;
 
+	// Feature 31: Rounded Buttons & UI Geometry
+	[[nodiscard]] bool roundedButtons() const { return _roundedButtons; }
+	void setRoundedButtons(bool rounded);
+	[[nodiscard]] int buttonRadius() const { return _buttonRadius; }
+	void setButtonRadius(int radius);
+
+	// Feature 32: Custom UI Font & Google Sans CDN
+	[[nodiscard]] QString uiFont() const { return _uiFont; }
+	void setUiFont(const QString &fontFamily);
+	[[nodiscard]] QStringList availableUiFonts() const;
+	void applyFont(const QString &fontFamily);
+	void loadGoogleSansCdn();
+
 	void resetToDefaults();
 
 private:
@@ -88,6 +101,9 @@ private:
 	int _messageTextDelta = 0;
 	bool _hideStoriesBar = false;
 	TimestampFormat _timestampFormat = TimestampFormat::Standard24;
+	bool _roundedButtons = true;
+	int _buttonRadius = 14;
+	QString _uiFont = u"Google Sans"_q;
 };
 
 } // namespace Themes

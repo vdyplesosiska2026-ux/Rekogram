@@ -291,6 +291,59 @@ private:
 				},
 			});
 
+			builder.addButton({
+				.id = u"reko_app/rounded_buttons"_q,
+				.title = rpl::single(QString::fromUtf8("Форма кнопок интерфейса (скругление)")),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto cur = Rekogram::Themes::CustomizerManager::Instance().buttonRadius();
+					const auto next = (cur >= 24) ? 4 : (cur == 4 ? 8 : (cur == 8 ? 14 : 24));
+					Rekogram::Themes::CustomizerManager::Instance().setButtonRadius(next);
+					QString label;
+					if (next == 4) label = QString::fromUtf8("Прямоугольные (4px)");
+					else if (next == 8) label = QString::fromUtf8("Стандартные (8px)");
+					else if (next == 14) label = QString::fromUtf8("Скруглённые (14px)");
+					else label = QString::fromUtf8("Капсульные / Pill (24px)");
+					Ui::Toast::Show(QString::fromUtf8("Форма кнопок: ") + label);
+				},
+			});
+
+			builder.addButton({
+				.id = u"reko_app/ui_font"_q,
+				.title = rpl::single(QString::fromUtf8("Шрифт интерфейса (Google Sans / Web CDN)")),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto fonts = Rekogram::Themes::CustomizerManager::Instance().availableUiFonts();
+					const auto cur = Rekogram::Themes::CustomizerManager::Instance().uiFont();
+					auto idx = fonts.indexOf(cur);
+					idx = (idx + 1) % fonts.size();
+					const auto selected = fonts[idx];
+					Rekogram::Themes::CustomizerManager::Instance().applyFont(selected);
+					Ui::Toast::Show(QString::fromUtf8("Выбран шрифт интерфейса: ") + selected);
+				},
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Приветственная плашка при входе («Спасибо, что выбираете Rekogram»)"),
+						Rekogram::SettingsManager::Instance().showWelcomeBanner(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::SettingsManager::Instance().setShowWelcomeBanner(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Приветственная плашка включена")
+						: QString::fromUtf8("Приветственная плашка выключена"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
 			builder.add([=](const WidgetContext &ctx) {
 				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
 				const auto checkbox = wrap->add(

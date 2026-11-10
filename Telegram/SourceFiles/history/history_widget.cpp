@@ -169,6 +169,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "lang/lang_keys.h"
 #include "settings/business/settings_quick_replies.h"
 #include "rekogram/rekogram_quick_replies.h"
+#include "rekogram/rekogram_ai_chat.h"
 #include "settings/settings_credits_graphics.h"
 #include "storage/localimageloader.h"
 #include "storage/storage_account.h"
@@ -5907,6 +5908,21 @@ void HistoryWidget::sendVoice(const VoiceToSend &data) {
 
 void HistoryWidget::send(Api::SendOptions options) {
 	if (!_history) {
+		return;
+	} else if (_history->peer->id == PeerData::kRekogramAIAssistantId) {
+		if (_field) {
+			const auto currentText = _field->getTextWithAppliedMarkdown();
+			const auto trimmed = currentText.text.trimmed();
+			if (!trimmed.isEmpty()) {
+				_field->setTextWithTags({});
+				_history->session().data().insertRekogramAIMessage(trimmed, true);
+				Rekogram::AIChatManager::Instance().sendMessage(trimmed);
+				const auto replies = Rekogram::AIChatManager::Instance().messages();
+				if (!replies.empty() && !replies.back().isOutgoing) {
+					_history->session().data().insertRekogramAIMessage(replies.back().text, false);
+				}
+			}
+		}
 		return;
 	} else if (_editMsgId) {
 		saveEditMessage({});

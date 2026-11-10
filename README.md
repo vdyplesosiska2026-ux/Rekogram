@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/vdyplesosiska2026-ux/Rekogram/releases">
-    <img src="https://img.shields.io/badge/Версия-1.5.0--dev-0071E3?style=flat-square" alt="Версия" />
+    <img src="https://img.shields.io/badge/Версия-1.6.0--dev-0071E3?style=flat-square" alt="Версия" />
   </a>
   <a href="https://github.com/vdyplesosiska2026-ux/Rekogram">
     <img src="https://img.shields.io/badge/Платформы-Windows%20%7C%20Linux%20%7C%20macOS-1D1D1F?style=flat-square" alt="Платформы" />

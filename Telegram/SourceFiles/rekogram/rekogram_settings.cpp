@@ -20,6 +20,7 @@ constexpr auto kExperimentalTabPref = "reko_experimental_tab";
 constexpr auto kDevModePref = "reko_dev_mode";
 constexpr auto kAccentColorPref = "reko_accent_color";
 constexpr auto kShowCreatorBadgePref = "reko_show_creator_badge";
+constexpr auto kShowWelcomeBannerPref = "reko_show_welcome_banner";
 constexpr auto kCreatorRolePref = "reko_creator_role";
 
 } // namespace
@@ -44,6 +45,7 @@ void SettingsManager::loadSettings() {
 	const auto accentBytes = core.readPref<QByteArray>(kAccentColorPref, QByteArray());
 	_accentColorHex = QString::fromUtf8(accentBytes);
 	_showCreatorBadge = core.readPref<bool>(kShowCreatorBadgePref, true);
+	_showWelcomeBanner = core.readPref<bool>(kShowWelcomeBannerPref, true);
 	const auto roleBytes = core.readPref<QByteArray>(kCreatorRolePref, QByteArray());
 	_creatorRole = roleBytes.isEmpty() ? QString::fromUtf8("Rekogram Архитектор") : QString::fromUtf8(roleBytes);
 }
@@ -57,6 +59,7 @@ void SettingsManager::saveSettings() {
 	core.writePref<bool>(kDevModePref, _devMode);
 	core.writePref<QByteArray>(kAccentColorPref, _accentColorHex.toUtf8());
 	core.writePref<bool>(kShowCreatorBadgePref, _showCreatorBadge);
+	core.writePref<bool>(kShowWelcomeBannerPref, _showWelcomeBanner);
 	core.writePref<QByteArray>(kCreatorRolePref, _creatorRole.toUtf8());
 }
 
@@ -174,6 +177,7 @@ void SettingsManager::resetToDefaults() {
 	_devMode = false;
 	_accentColorHex.clear();
 	_showCreatorBadge = true;
+	_showWelcomeBanner = true;
 	_creatorRole = QString::fromUtf8("Rekogram Архитектор");
 	saveSettings();
 }

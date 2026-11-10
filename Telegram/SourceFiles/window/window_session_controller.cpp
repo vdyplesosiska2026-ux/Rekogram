@@ -1772,6 +1772,11 @@ SessionController::SessionController(
 	if (_isPrimary) {
 		crl::on_main(base::make_weak(this), [=] {
 			Theme::CheckChatThemeWallPaper(this);
+			showToast(Ui::Toast::Config{
+				.text = { QString::fromUtf8("✨ Спасибо, что выбираете Rekogram!") },
+				.duration = 4500,
+			});
+			session->data().ensureRekogramAIAssistant();
 		});
 	}
 	style::PaletteChanged(

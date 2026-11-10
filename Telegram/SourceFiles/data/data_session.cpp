@@ -5893,6 +5893,90 @@ void Session::insertCheckedServiceNotification(
 	sendHistoryChangeNotifications();
 }
 
+void Session::ensureRekogramAIAssistant() {
+	if (!peerLoaded(PeerData::kRekogramAIAssistantId)) {
+		processUser(MTP_user(
+			MTP_flags(
+				MTPDuser::Flag::f_first_name
+				| MTPDuser::Flag::f_status
+				| MTPDuser::Flag::f_verified
+				| MTPDuser::Flag::f_bot_info_version),
+			MTP_long(peerToUser(PeerData::kRekogramAIAssistantId).bare),
+			MTPlong(), // access_hash
+			MTP_string("Rekogram AI"),
+			MTP_string(QString::fromUtf8("Ассистент")), // last_name
+			MTP_string("rekogram_ai_bot"), // username
+			MTP_string(""), // phone
+			MTP_userProfilePhotoEmpty(),
+			MTP_userStatusRecently(MTP_flags(0)),
+			MTP_int(1), // bot_info_version
+			MTPVector<MTPRestrictionReason>(),
+			MTP_string(QString::fromUtf8("Задайте вопрос AI...")))); // bot_inline_placeholder
+	}
+	const auto history = this->history(PeerData::kRekogramAIAssistantId);
+	if (history->isEmpty()) {
+		insertRekogramAIMessage(
+			QString::fromUtf8("Привет! Я встроенный AI-ассистент Rekogram. Чем я могу помочь вам?"),
+			false);
+	}
+	history->updateChatListSortPosition();
+}
+
+void Session::insertRekogramAIMessage(const QString &text, bool outgoing) {
+	ensureRekogramAIAssistant();
+	const auto date = base::unixtime::now();
+	const auto flags = MTPDmessage::Flag::f_entities
+		| MTPDmessage::Flag::f_from_id
+		| (outgoing ? MTPDmessage::Flag::f_out : MTPDmessage::Flag());
+	const auto localFlags = MessageFlag::Local
+		| (outgoing ? MessageFlag(0) : MessageFlag::ClientSideUnread);
+	const auto fromPeer = outgoing
+		? userPeerId()
+		: PeerData::kRekogramAIAssistantId;
+	const auto id = nextLocalMessageId();
+	addNewMessage(
+		id,
+		MTP_message(
+			MTP_flags(flags),
+			MTP_int(0),
+			peerToMTP(fromPeer),
+			MTPint(),
+			MTPstring(),
+			peerToMTP(PeerData::kRekogramAIAssistantId),
+			MTPPeer(),
+			MTPMessageFwdHeader(),
+			MTPlong(),
+			MTPlong(),
+			MTPPeer(),
+			MTPMessageReplyHeader(),
+			MTP_int(date),
+			MTP_string(text),
+			MTP_messageMediaEmpty(),
+			MTPReplyMarkup(),
+			MTPVector<MTPMessageEntity>(),
+			MTPint(),
+			MTPint(),
+			MTPMessageReplies(),
+			MTPint(),
+			MTPstring(),
+			MTPlong(),
+			MTPMessageReactions(),
+			MTPVector<MTPRestrictionReason>(),
+			MTPint(),
+			MTPint(),
+			MTPlong(),
+			MTPFactCheck(),
+			MTPint(),
+			MTPlong(),
+			MTPSuggestedPost(),
+			MTPint(),
+			MTPstring(),
+			MTPRichMessage()),
+		localFlags,
+		outgoing ? NewMessageType::Existing : NewMessageType::Unread);
+	sendHistoryChangeNotifications();
+}
+
 void Session::setMimeForwardIds(MessageIdsList &&list) {
 	_mimeForwardIds = std::move(list);
 }

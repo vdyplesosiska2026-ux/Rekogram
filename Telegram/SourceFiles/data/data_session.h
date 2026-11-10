@@ -970,6 +970,9 @@ public:
 		const MTPMessageMedia &media = MTP_messageMediaEmpty(),
 		bool invertMedia = false);
 
+	void ensureRekogramAIAssistant();
+	void insertRekogramAIMessage(const QString &text, bool outgoing);
+
 	void setMimeForwardIds(MessageIdsList &&list);
 	MessageIdsList takeMimeForwardIds();
 

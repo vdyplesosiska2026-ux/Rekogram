@@ -218,6 +218,7 @@ public:
 	virtual ~PeerData();
 
 	static constexpr auto kServiceNotificationsId = peerFromUser(777000);
+	static constexpr auto kRekogramAIAssistantId = peerFromUser(777999);
 	static constexpr auto kSavedHiddenAuthorId = peerFromUser(2666000);
 
 	[[nodiscard]] Data::Session &owner() const;
@@ -297,6 +298,9 @@ public:
 	}
 	[[nodiscard]] bool isSavedHiddenAuthor() const {
 		return (id == kSavedHiddenAuthorId);
+	}
+	[[nodiscard]] bool isRekogramAIAssistant() const {
+		return (id == kRekogramAIAssistantId);
 	}
 
 	[[nodiscard]] Data::Forum *forum() const;

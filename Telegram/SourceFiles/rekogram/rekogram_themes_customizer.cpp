@@ -24,6 +24,9 @@ constexpr auto kChatDensityPref = "reko_thm_chat_density";
 constexpr auto kMessageTextDeltaPref = "reko_thm_msg_text_delta";
 constexpr auto kHideStoriesBarPref = "reko_thm_hide_stories_bar";
 constexpr auto kTimestampFormatPref = "reko_thm_timestamp_format";
+constexpr auto kRoundedButtonsPref = "reko_thm_rounded_buttons";
+constexpr auto kButtonRadiusPref = "reko_thm_button_radius";
+constexpr auto kUiFontPref = "reko_thm_ui_font";
 
 } // namespace
 
@@ -46,6 +49,9 @@ void CustomizerManager::load() {
 	_messageTextDelta = core.readPref<QByteArray>(kMessageTextDeltaPref, "0").toInt();
 	_hideStoriesBar = core.readPref<bool>(kHideStoriesBarPref, false);
 	_timestampFormat = static_cast<TimestampFormat>(core.readPref<QByteArray>(kTimestampFormatPref, "0").toInt());
+	_roundedButtons = core.readPref<bool>(kRoundedButtonsPref, true);
+	_buttonRadius = core.readPref<QByteArray>(kButtonRadiusPref, "14").toInt();
+	_uiFont = QString::fromUtf8(core.readPref<QByteArray>(kUiFontPref, "Google Sans"));
 }
 
 void CustomizerManager::save() {
@@ -58,6 +64,9 @@ void CustomizerManager::save() {
 	core.writePref<QByteArray>(kMessageTextDeltaPref, QByteArray::number(_messageTextDelta));
 	core.writePref<bool>(kHideStoriesBarPref, _hideStoriesBar);
 	core.writePref<QByteArray>(kTimestampFormatPref, QByteArray::number(static_cast<int>(_timestampFormat)));
+	core.writePref<bool>(kRoundedButtonsPref, _roundedButtons);
+	core.writePref<QByteArray>(kButtonRadiusPref, QByteArray::number(_buttonRadius));
+	core.writePref<QByteArray>(kUiFontPref, _uiFont.toUtf8());
 }
 
 void CustomizerManager::setBubbleRadius(int radius) {
@@ -161,6 +170,65 @@ QString CustomizerManager::formatTime(const QTime &time) const {
 	}
 }
 
+void CustomizerManager::setRoundedButtons(bool rounded) {
+	if (_roundedButtons != rounded) {
+		_roundedButtons = rounded;
+		save();
+	}
+}
+
+void CustomizerManager::setButtonRadius(int radius) {
+	const auto clamped = std::clamp(radius, 0, 28);
+	if (_buttonRadius != clamped) {
+		_buttonRadius = clamped;
+		save();
+	}
+}
+
+void CustomizerManager::setUiFont(const QString &fontFamily) {
+	if (_uiFont != fontFamily && !fontFamily.isEmpty()) {
+		_uiFont = fontFamily;
+		save();
+	}
+}
+
+QStringList CustomizerManager::availableUiFonts() const {
+	return {
+		u"Google Sans"_q,
+		u"Inter"_q,
+		u"Roboto"_q,
+		u"SF Pro Display"_q,
+		u"Segoe UI Variable"_q,
+		u"JetBrains Mono"_q,
+		u"Fira Code"_q,
+		u"Montserrat"_q,
+		u"Poppins"_q,
+		u"Ubuntu"_q,
+		QString::fromUtf8("По умолчанию"),
+	};
+}
+
+void CustomizerManager::applyFont(const QString &fontFamily) {
+	setUiFont(fontFamily);
+	if (fontFamily.isEmpty() || fontFamily == QString::fromUtf8("По умолчанию")) {
+		Core::App().settings().setCustomFontFamily(QString());
+	} else {
+		Core::App().settings().setCustomFontFamily(fontFamily);
+	}
+}
+
+void CustomizerManager::loadGoogleSansCdn() {
+	const auto families = QFontDatabase::families();
+	if (families.contains(u"Google Sans"_q, Qt::CaseInsensitive)) {
+		return;
+	}
+	// Verify local downloaded font cache
+	const auto localPath = Core::App().settings().customFontFamily();
+	if (!localPath.isEmpty()) {
+		QFontDatabase::addApplicationFont(localPath);
+	}
+}
+
 void CustomizerManager::resetToDefaults() {
 	_bubbleRadius = 12;
 	_monospaceFont = u"Consolas"_q;
@@ -170,6 +238,9 @@ void CustomizerManager::resetToDefaults() {
 	_messageTextDelta = 0;
 	_hideStoriesBar = false;
 	_timestampFormat = TimestampFormat::Standard24;
+	_roundedButtons = true;
+	_buttonRadius = 14;
+	_uiFont = u"Google Sans"_q;
 	save();
 }
 

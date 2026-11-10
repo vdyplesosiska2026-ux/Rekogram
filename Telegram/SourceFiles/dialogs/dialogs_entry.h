@@ -139,7 +139,8 @@ public:
 
 	[[nodiscard]] virtual int fixedOnTopIndex() const = 0;
 	static constexpr auto kArchiveFixOnTopIndex = 1;
-	static constexpr auto kTopPromotionFixOnTopIndex = 2;
+	static constexpr auto kRekogramAIFixOnTopIndex = 2;
+	static constexpr auto kTopPromotionFixOnTopIndex = 3;
 
 	[[nodiscard]] virtual bool shouldBeInChatList() const = 0;
 	[[nodiscard]] virtual UnreadState chatListUnreadState() const = 0;
