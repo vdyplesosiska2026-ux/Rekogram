@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "core/file_utilities.h"
+#include "rekogram/rekogram_security.h"
 
 #include "base/platform/base_platform_file_utilities.h"
 #include "base/unixtime.h"
@@ -133,6 +134,25 @@ QString filedialogNextFilename(
 namespace File {
 
 bool IsUrlSchemeAllowed(const QString &scheme) {
+	static const auto kDangerousSchemes = std::array{
+		u"ms-msdt"_q,
+		u"search-ms"_q,
+		u"ms-appinstaller"_q,
+		u"javascript"_q,
+		u"vbscript"_q,
+		u"data"_q,
+		u"res"_q,
+		u"file"_q,
+		u"shell"_q,
+		u"cmd"_q,
+		u"powershell"_q,
+		u"diskpart"_q,
+		u"rundll32"_q,
+	};
+	if (ranges::contains(kDangerousSchemes, scheme.toLower())) {
+		return false;
+	}
+
 	static const auto kSchemes = std::array{
 		u"http"_q,
 		u"https"_q,
@@ -242,6 +262,11 @@ QString DefaultDownloadPath(not_null<Main::Session*> session) {
 namespace internal {
 
 void UnsafeOpenUrlDefault(const QString &url) {
+	const auto secAudit = Rekogram::Security::SecurityManager::Instance().auditUrl(url);
+	if (secAudit.isDangerous) {
+		Ui::Toast::Show(secAudit.warningMessage);
+		return;
+	}
 	const auto parsed = QUrl(url);
 	if (!parsed.isValid()
 		|| parsed.isLocalFile()
@@ -253,7 +278,12 @@ void UnsafeOpenUrlDefault(const QString &url) {
 }
 
 void UnsafeOpenEmailLinkDefault(const QString &email) {
-	auto url = QUrl(u"mailto:"_q + email);
+	for (const auto ch : email) {
+		if (ch < 32 || ch == '"' || ch == '\\' || ch == ';' || ch == '&' || ch == '|' || ch == '`') {
+			return; // Block injection characters
+		}
+	}
+	auto url = QUrl(u"mailto:"_q + email.trimmed());
 	QDesktopServices::openUrl(url);
 }
 

@@ -97,6 +97,7 @@ enum class Command {
 	SupportHistoryForward,
 
 	RekogramPalette,
+	RekogramPanicLock,
 };
 
 [[maybe_unused]] constexpr auto kShowFolder = {

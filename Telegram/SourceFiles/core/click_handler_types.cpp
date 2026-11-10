@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "core/click_handler_types.h"
+#include "rekogram/rekogram_security.h"
 
 #include "base/unixtime.h"
 #include "lang/lang_keys.h"
@@ -78,6 +79,9 @@ constexpr auto kReminderSetToastDuration = 4 * crl::time(1000);
 	if (host == shown || ada::idna::to_ascii(unicode) != ace) {
 		return result;
 	}
+	if (UrlClickHandler::IsSuspicious(host)) {
+		return result; // Protect user from IDN homograph phishing: keep punycode xn--
+	}
 	const auto authority = result.indexOf(u"://"_q);
 	const auto from = (authority < 0)
 		? -1
@@ -114,7 +118,13 @@ constexpr auto kReminderSetToastDuration = 4 * crl::time(1000);
 
 	if (const auto parsedUrl = QUrl(url); parsedUrl.isValid()) {
 		if (const auto host = parsedUrl.host(); !host.isEmpty()) {
-			if (const auto hostPos = url.indexOf(host); hostPos != -1) {
+			const auto authority = url.indexOf(u"://"_q);
+			const auto searchFrom = (authority < 0)
+				? 0
+				: (parsedUrl.userInfo().isEmpty()
+					? (authority + 3)
+					: (url.indexOf('@', authority + 3) + 1));
+			if (const auto hostPos = url.indexOf(host, searchFrom); hostPos != -1) {
 				auto boldEntity = EntityInText(
 					EntityType::Bold,
 					hostPos,
@@ -523,6 +533,15 @@ void HiddenUrlClickHandler::Open(QString url, QVariant context) {
 		}()));
 	} else {
 		auto my = context.value<ClickHandlerContext>();
+		const auto secAudit = Rekogram::Security::SecurityManager::Instance().auditUrl(url);
+		if (secAudit.isDangerous) {
+			if (my.show) {
+				my.show->showToast(secAudit.warningMessage);
+			} else {
+				Ui::Toast::Show(secAudit.warningMessage);
+			}
+			return;
+		}
 		const auto isEmail = UrlClickHandler::IsEmail(url);
 		const auto external = QUrl(url);
 		const auto parsedUrl = external.scheme().isEmpty()

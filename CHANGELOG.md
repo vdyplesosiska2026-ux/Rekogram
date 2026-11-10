@@ -4,6 +4,56 @@
 
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/).
 
+## [1.5.0-dev] - 2026-11-10 — Security Hardening, Exploit Mitigations & 30 Native Features
+
+### Безопасность и устранение уязвимостей (Security Hardening)
+- **Комплексный аудит переходов по ссылкам и обработчиков кликов**:
+  - `core/file_utilities.cpp`: внедрён чёрный список опасных протоколов ОС (`ms-msdt`, `search-ms`, `ms-appinstaller`, `powershell`, `cmd` и др.) в `IsUrlSchemeAllowed()`.
+  - Интегрирован вызов `SecurityManager::Instance().auditUrl()` непосредственно в системную функцию перехода по внешним ссылкам `UnsafeOpenUrlDefault()`.
+  - `core/ui_integration.cpp`: перехвачены прямые переходы `UiIntegration::handleUrlClick()`, предотвращая обход через клики по обычным URL.
+  - `core/click_handler_types.cpp`: нейтрализована уязвимость спуфинга учётных данных через URL authority (`user:pass@host`) в `BoldDomainInUrl`.
+  - `core/click_handler_types.cpp`: заблокирован обход антифишинга в `DisplayUrlWithUnicodeHost` — подозрительные IDN-домены со смешанными алфавитами больше не декодируются в Unicode и отображаются как предупреждение в punycode (`xn--...`).
+  - `storage/localimageloader.cpp`: интегрирована очистка EXIF-тегов, геолокации и метаданных камеры из отправляемых JPEG-изображений (`SecurityManager::stripExifFromJpeg()`).
+
+### Добавлено 30 нативных функций Rekogram (30 Native Features)
+- **Безопасность и приватность (`rekogram_security`)**:
+  - **Anti-Phishing & Homograph Shield**: обнаружение атак спуфинга доменов с похожими символами (кириллица/латиница) и встроенных credentials.
+  - **Strict P2P Relay**: принудительный запрет P2P-соединений в звонках без одобрения для предотвращения утечки реального IP-адреса.
+  - **EXIF & Camera Metadata Stripper**: автоматическое удаление метаданных камеры и GPS при отправке сжатых фото.
+  - **Auto-Clear Search History on Lock**: автоматическая очистка поисковых запросов и локальных кэшей поиска при блокировке клиента.
+  - **Panic Mode (Экстренная блокировка)**: мгновенная блокировка паролем и полная очистка буфера обмена по шорткату `Ctrl+Shift+L` (`core/shortcuts.cpp`, `core/application.cpp`).
+  - **Sensitive Media Blur Overlay**: защитное размытие чувствительного медиа-контента в ленте.
+- **Кастомизация и оформление (`rekogram_themes_customizer`)**:
+  - **Custom Chat Bubble Radius**: гибкая настройка радиуса скругления облачков сообщений (от 0px до 24px).
+  - **Monospace Code Font Selector**: выбор шрифта для блоков форматирования кода (Cascadia Code, Fira Code, JetBrains Mono, Consolas, Monaco, Source Code Pro).
+  - **6 Accent Color Presets**: готовые дизайнерские цветовые акценты (Azure, Emerald, Amethyst, Sunset, Titanium, Crimson).
+  - **Hide "All Chats" Folder Tab**: возможность скрытия первой системной вкладки «Все чаты» для компактности панели папок.
+  - **Chat Density Presets**: 3 пресета плотности списка чатов (Компактный, Стандартный, Просторный).
+  - **Message Font Size Delta**: точная регулировка размера текста сообщений от -3px до +5px.
+  - **Hide Stories Bar**: отключение верхней панели историй в шапке списка диалогов.
+  - **Custom Timestamp Formats**: выбор формата времени сообщений (24 часа, 12 часов AM/PM, с отображением секунд).
+- **Продуктивность чатов (`rekogram_chat_enhancer`)**:
+  - **Copy Link + Text**: контекстное действие для одновременного копирования текста сообщения и ссылки на него.
+  - **Double-Click Action on Message**: настраиваемое действие по двойному клику (Ответ, Реакция сердечком, Копирование текста, Редактирование).
+  - **Char & Byte Counter**: отображение счётчика символов и байтов в поле ввода длинных сообщений.
+  - **Destructive Action Confirmation Guard**: дополнительное подтверждение перед удалением диалогов, выходом из каналов и очисткой истории.
+  - **Auto-Mute on Call Join**: автоматическое отключение микрофона при входе в голосовые чаты и звонки.
+  - **Fast Mention Shortcuts**: ускоренная вставка упоминаний участников чата.
+  - **Clean Forward**: быстрая пересылка сообщений без цитирования автора и источника.
+  - **Disable Sticker & Emoji Animations**: энергосберегающий режим с полным отключением циклической анимации стикеров и эмодзи.
+- **Инструменты разработчика и расширенные утилиты (`rekogram_advanced_tools`)**:
+  - **Raw Message MTProto/JSON Inspector**: просмотр сырой структуры сообщений Telegram (PeerId, MessageId, Flags, ChannelId, Entities).
+  - **One-Click Storage Cleaner & Vacuum**: мгновенная очистка временных файлов и оптимизация SQLite базы данных.
+  - **Creator Team Role Switcher**: динамическое переключение должности автора в профиле (Rekogram Архитектор, Rekogram Developer, Создатель Rekogram, Lead Engineer, UI/UX Designer).
+  - **Active DC Latency Monitor**: отображение текущего подключенного дата-центра Telegram (DC1-DC5) и пинга.
+  - **Export Chat to Markdown**: экспорт истории выделенного диалога в чистый форматированный Markdown-файл.
+  - **Custom Startup Section**: выбор стартового раздела при запуске приложения.
+  - **Multi-Account Hotkeys**: быстрое переключение между активными аккаунтами по `Ctrl+1..Ctrl+9`.
+  - **Extended System Diagnostics**: сбор системной информации об ОС, графическом драйвере, сборке Qt и окружении.
+- **Интеграция настроек и резервное копирование (`rekogram_backup v3`)**:
+  - Все новые параметры выведены в нативные подразделы «Настройки Rekogram»: «Оформление», «Приватность», «Чаты» и «Инструменты».
+  - Модуль резервного копирования `rekogram_backup.cpp` обновлён до версии 3 с поддержкой экспорта/импорта настроек безопасности, тем и расширений чата.
+
 ## [1.4.0-dev] - 2026-11-10 — Native UI Tools, Streamer Shield & Command Palette Integration
 
 ### Добавлено

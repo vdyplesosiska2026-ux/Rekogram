@@ -20,6 +20,7 @@ constexpr auto kExperimentalTabPref = "reko_experimental_tab";
 constexpr auto kDevModePref = "reko_dev_mode";
 constexpr auto kAccentColorPref = "reko_accent_color";
 constexpr auto kShowCreatorBadgePref = "reko_show_creator_badge";
+constexpr auto kCreatorRolePref = "reko_creator_role";
 
 } // namespace
 
@@ -43,6 +44,8 @@ void SettingsManager::loadSettings() {
 	const auto accentBytes = core.readPref<QByteArray>(kAccentColorPref, QByteArray());
 	_accentColorHex = QString::fromUtf8(accentBytes);
 	_showCreatorBadge = core.readPref<bool>(kShowCreatorBadgePref, true);
+	const auto roleBytes = core.readPref<QByteArray>(kCreatorRolePref, QByteArray());
+	_creatorRole = roleBytes.isEmpty() ? QString::fromUtf8("Rekogram Архитектор") : QString::fromUtf8(roleBytes);
 }
 
 void SettingsManager::saveSettings() {
@@ -54,6 +57,7 @@ void SettingsManager::saveSettings() {
 	core.writePref<bool>(kDevModePref, _devMode);
 	core.writePref<QByteArray>(kAccentColorPref, _accentColorHex.toUtf8());
 	core.writePref<bool>(kShowCreatorBadgePref, _showCreatorBadge);
+	core.writePref<QByteArray>(kCreatorRolePref, _creatorRole.toUtf8());
 }
 
 bool SettingsManager::isOwner(UserId userId) const {
@@ -136,6 +140,32 @@ void SettingsManager::setAccentColorHex(const QString &hex) {
 	}
 }
 
+QString SettingsManager::creatorRole() const {
+	return _creatorRole.isEmpty() ? QString::fromUtf8("Rekogram Архитектор") : _creatorRole;
+}
+
+void SettingsManager::setCreatorRole(const QString &role) {
+	if (_creatorRole != role) {
+		_creatorRole = role;
+		saveSettings();
+	}
+}
+
+QString SettingsManager::nextCreatorRole() {
+	static const QStringList kRoles = {
+		QString::fromUtf8("Rekogram Архитектор"),
+		QString::fromUtf8("Rekogram Developer"),
+		QString::fromUtf8("Создатель Rekogram"),
+		QString::fromUtf8("Rekogram Lead Engineer"),
+		QString::fromUtf8("Rekogram UI/UX Designer"),
+	};
+	const auto current = creatorRole();
+	auto idx = kRoles.indexOf(current);
+	idx = (idx + 1) % kRoles.size();
+	setCreatorRole(kRoles[idx]);
+	return kRoles[idx];
+}
+
 void SettingsManager::resetToDefaults() {
 	_ownerId = kDefaultOwnerUserId;
 	_compactChatList = false;
@@ -144,6 +174,7 @@ void SettingsManager::resetToDefaults() {
 	_devMode = false;
 	_accentColorHex.clear();
 	_showCreatorBadge = true;
+	_creatorRole = QString::fromUtf8("Rekogram Архитектор");
 	saveSettings();
 }
 

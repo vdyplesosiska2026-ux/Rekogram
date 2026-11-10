@@ -29,6 +29,10 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "rekogram/rekogram_reminders.h"
 #include "rekogram/rekogram_settings.h"
 #include "rekogram/rekogram_streamer_mode.h"
+#include "rekogram/rekogram_security.h"
+#include "rekogram/rekogram_themes_customizer.h"
+#include "rekogram/rekogram_chat_enhancer.h"
+#include "rekogram/rekogram_advanced_tools.h"
 #include "settings/sections/settings_main.h"
 #include "settings/sections/settings_shortcuts.h"
 #include "settings/settings_builder.h"
@@ -235,6 +239,114 @@ private:
 
 				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
 			});
+
+			builder.addSkip();
+			builder.addDivider();
+			builder.addSkip();
+
+			builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Тонкая кастомизация интерфейса")));
+
+			builder.addButton({
+				.id = u"reko_app/bubble_radius"_q,
+				.title = rpl::single(QString::fromUtf8("Скругление пузырей сообщений")),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto cur = Rekogram::Themes::CustomizerManager::Instance().bubbleRadius();
+					const auto next = (cur >= 24) ? 0 : (cur + 6);
+					Rekogram::Themes::CustomizerManager::Instance().setBubbleRadius(next);
+					Ui::Toast::Show(QString::fromUtf8("Радиус скругления пузырей: ") + QString::number(next) + u"px"_q);
+				},
+			});
+
+			builder.addButton({
+				.id = u"reko_app/mono_font"_q,
+				.title = rpl::single(QString::fromUtf8("Шрифт блоков кода")),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto fonts = Rekogram::Themes::CustomizerManager::Instance().availableMonospaceFonts();
+					const auto cur = Rekogram::Themes::CustomizerManager::Instance().monospaceFont();
+					auto idx = fonts.indexOf(cur);
+					idx = (idx + 1) % fonts.size();
+					Rekogram::Themes::CustomizerManager::Instance().setMonospaceFont(fonts[idx]);
+					Ui::Toast::Show(QString::fromUtf8("Выбран шрифт кода: ") + fonts[idx]);
+				},
+			});
+
+			builder.addButton({
+				.id = u"reko_app/accent_preset"_q,
+				.title = rpl::single(QString::fromUtf8("Выбрать акцентный пресет цвета")),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto presets = Rekogram::Themes::CustomizerManager::Instance().accentPresets();
+					const auto cur = Rekogram::Themes::CustomizerManager::Instance().accentColor();
+					int nextIdx = 0;
+					for (size_t i = 0; i < presets.size(); ++i) {
+						if (presets[i].hexColor == cur) {
+							nextIdx = (i + 1) % presets.size();
+							break;
+						}
+					}
+					Rekogram::Themes::CustomizerManager::Instance().setAccentColor(presets[nextIdx].hexColor);
+					Ui::Toast::Show(QString::fromUtf8("Выбран акцент: ") + presets[nextIdx].name + u" ("_q + presets[nextIdx].hexColor + u")"_q);
+				},
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Скрыть общую вкладку «Все чаты» (только папки)"),
+						Rekogram::Themes::CustomizerManager::Instance().hideAllChatsTab(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::Themes::CustomizerManager::Instance().setHideAllChatsTab(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Вкладка «Все чаты» скрыта")
+						: QString::fromUtf8("Вкладка «Все чаты» отображается"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Скрыть ленту историй вверху списка чатов"),
+						Rekogram::Themes::CustomizerManager::Instance().hideStoriesBar(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::Themes::CustomizerManager::Instance().setHideStoriesBar(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Лента историй скрыта")
+						: QString::fromUtf8("Лента историй включена"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.addButton({
+				.id = u"reko_app/time_format"_q,
+				.title = rpl::single(QString::fromUtf8("Переключить формат времени сообщений")),
+				.icon = { &st::menuIconTimer },
+				.onClick = [=] {
+					const auto cur = static_cast<int>(Rekogram::Themes::CustomizerManager::Instance().timestampFormat());
+					const auto next = static_cast<Rekogram::Themes::TimestampFormat>((cur + 1) % 4);
+					Rekogram::Themes::CustomizerManager::Instance().setTimestampFormat(next);
+					QString label = (next == Rekogram::Themes::TimestampFormat::Standard12) ? QString::fromUtf8("12-часовой (AM/PM)")
+						: (next == Rekogram::Themes::TimestampFormat::WithSeconds) ? QString::fromUtf8("С секундами (14:25:30)")
+						: QString::fromUtf8("Стандартный 24-часовой");
+					Ui::Toast::Show(QString::fromUtf8("Формат времени: ") + label);
+				},
+			});
 		};
 		build(content, buildMethod);
 		Ui::ResizeFitChild(this, content);
@@ -373,6 +485,105 @@ private:
 					}));
 				},
 			});
+
+			builder.addSkip();
+			builder.addDivider();
+			builder.addSkip();
+
+			builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Активная киберзащита и аудит (Rekogram Shield)")));
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Защита от фишинга, опасных ссылок и гомоглифов (Anti-Phishing Shield)"),
+						Rekogram::Security::SecurityManager::Instance().antiPhishingEnabled(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::Security::SecurityManager::Instance().setAntiPhishingEnabled(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Защита от опасных ссылок включена")
+						: QString::fromUtf8("Защита от опасных ссылок отключена"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Строгий Relay звонков (всегда скрывать IP-адрес от собеседника)"),
+						Rekogram::Security::SecurityManager::Instance().strictP2PRelay(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::Security::SecurityManager::Instance().setStrictP2PRelay(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Прямые P2P звонки запрещены (IP защищен)")
+						: QString::fromUtf8("P2P звонки разрешены"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Удалять метаданные EXIF и GPS координаты перед отправкой фото"),
+						Rekogram::Security::SecurityManager::Instance().stripMediaMetadata(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::Security::SecurityManager::Instance().setStripMediaMetadata(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Очистка EXIF/GPS метаданных включена")
+						: QString::fromUtf8("Очистка EXIF метаданных отключена"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Автоматически очищать историю поиска при блокировке приложения"),
+						Rekogram::Security::SecurityManager::Instance().autoClearSearchOnLock(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::Security::SecurityManager::Instance().setAutoClearSearchOnLock(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Автоочистка поиска активна")
+						: QString::fromUtf8("Автоочистка поиска выключена"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.addButton({
+				.id = u"reko_priv/panic_lock"_q,
+				.title = rpl::single(QString::fromUtf8("Экстренная блокировка и очистка буфера (Panic Lock)")),
+				.icon = { &st::menuIconLock },
+				.onClick = [=] {
+					Rekogram::Security::SecurityManager::Instance().triggerPanicLock();
+				},
+			});
 		};
 		build(content, buildMethod);
 		Ui::ResizeFitChild(this, content);
@@ -426,6 +637,108 @@ private:
 						.title = QString::fromUtf8("Шаблоны Quick Replies"),
 					}));
 				},
+			});
+
+			builder.addSkip();
+			builder.addDivider();
+			builder.addSkip();
+
+			builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Улучшения чатов и ввода (Chat Enhancer)")));
+
+			builder.addButton({
+				.id = u"reko_chat/double_click"_q,
+				.title = rpl::single(QString::fromUtf8("Действие по двойному клику: ") + Rekogram::ChatEnhancer::EnhancerManager::Instance().doubleClickActionName()),
+				.icon = { &st::menuIconChatBubble },
+				.onClick = [=] {
+					const auto cur = static_cast<int>(Rekogram::ChatEnhancer::EnhancerManager::Instance().doubleClickAction());
+					const auto next = static_cast<Rekogram::ChatEnhancer::DoubleClickAction>((cur + 1) % 4);
+					Rekogram::ChatEnhancer::EnhancerManager::Instance().setDoubleClickAction(next);
+					Ui::Toast::Show(QString::fromUtf8("Действие по двойному клику: ") + Rekogram::ChatEnhancer::EnhancerManager::Instance().doubleClickActionName());
+				},
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Счётчик символов и байт в поле ввода сообщения"),
+						Rekogram::ChatEnhancer::EnhancerManager::Instance().showCharByteCounter(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::ChatEnhancer::EnhancerManager::Instance().setShowCharByteCounter(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Счётчик длины сообщений включен")
+						: QString::fromUtf8("Счётчик длины сообщений скрыт"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Авто-заглушение микрофона при входе в голосовой чат"),
+						Rekogram::ChatEnhancer::EnhancerManager::Instance().autoMuteOnJoin(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::ChatEnhancer::EnhancerManager::Instance().setAutoMuteOnJoin(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Микрофон будет глушиться при входе")
+						: QString::fromUtf8("Стандартное поведение микрофона"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Пересылка без цитирования (Clean Forward)"),
+						Rekogram::ChatEnhancer::EnhancerManager::Instance().cleanForwardWithoutQuoting(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::ChatEnhancer::EnhancerManager::Instance().setCleanForwardWithoutQuoting(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Пересылка без указания авторства включена")
+						: QString::fromUtf8("Стандартная пересылка с указанием автора"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
+			});
+
+			builder.add([=](const WidgetContext &ctx) {
+				auto wrap = object_ptr<Ui::VerticalLayout>(ctx.container);
+				const auto checkbox = wrap->add(
+					object_ptr<Ui::Checkbox>(
+						wrap.data(),
+						QString::fromUtf8("Отключить авто-воспроизведение стикеров (экономия ресурсов)"),
+						Rekogram::ChatEnhancer::EnhancerManager::Instance().disableStickerAutoPlay(),
+						st::defaultCheckbox),
+					st::settingsCheckboxPadding);
+
+				checkbox->checkedChanges(
+				) | rpl::on_next([=](bool checked) {
+					Rekogram::ChatEnhancer::EnhancerManager::Instance().setDisableStickerAutoPlay(checked);
+					Ui::Toast::Show(checked
+						? QString::fromUtf8("Авто-анимация стикеров выключена")
+						: QString::fromUtf8("Авто-анимация стикеров включена"));
+				}, checkbox->lifetime());
+
+				return SectionBuilder::WidgetToAdd{ .widget = std::move(wrap) };
 			});
 		};
 		build(content, buildMethod);
@@ -667,6 +980,54 @@ private:
 				.icon = { &st::menuIconManage },
 				.onClick = [=] {
 					Rekogram::CommandPalette::Show(controller);
+				},
+			});
+
+			builder.addSkip();
+			builder.addDivider();
+			builder.addSkip();
+
+			builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Инструменты системы и диагностика")));
+
+			builder.addButton({
+				.id = u"reko_adv/clean_cache"_q,
+				.title = rpl::single(QString::fromUtf8("Очистить временный кэш и оптимизировать БД")),
+				.icon = { &st::menuIconDelete },
+				.onClick = [=] {
+					const auto res = Rekogram::Advanced::AdvancedToolsManager::Instance().cleanLocalCache();
+					const auto mb = static_cast<double>(res.bytesFreed) / (1024.0 * 1024.0);
+					Ui::Toast::Show(QString::fromUtf8("Кэш очищен: удалено ") + QString::number(res.filesRemoved) + QString::fromUtf8(" файлов, освобождено ") + QString::number(mb, 'f', 2) + u" МБ"_q);
+				},
+			});
+
+			builder.addButton({
+				.id = u"reko_adv/cycle_role"_q,
+				.title = rpl::single(QString::fromUtf8("Переключить роль в профиле: ") + Rekogram::SettingsManager::Instance().creatorRole()),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto next = Rekogram::SettingsManager::Instance().nextCreatorRole();
+					Ui::Toast::Show(QString::fromUtf8("Роль в профиле изменена: ") + next);
+				},
+			});
+
+			builder.addButton({
+				.id = u"reko_adv/diagnostics"_q,
+				.title = rpl::single(QString::fromUtf8("Диагностика системы и активного дата-центра (DC)")),
+				.icon = { &st::menuIconManage },
+				.onClick = [=] {
+					const auto diag = Rekogram::Advanced::AdvancedToolsManager::Instance().diagnostics();
+					QString info = QString::fromUtf8("<b>Диагностика Rekogram Desktop:</b><br><br>")
+						+ QString::fromUtf8("• <b>ОС:</b> ") + diag.osVersion + u"<br>"_q
+						+ QString::fromUtf8("• <b>Компилятор:</b> ") + diag.compilerVersion + u"<br>"_q
+						+ QString::fromUtf8("• <b>Qt:</b> ") + diag.qtVersion + u"<br>"_q
+						+ QString::fromUtf8("• <b>Дата сборки:</b> ") + diag.buildDate + u"<br>"_q
+						+ QString::fromUtf8("• <b>Подключенный DC:</b> ") + diag.activeDC + u"<br>"_q
+						+ QString::fromUtf8("• <b>Git SHA:</b> ") + diag.gitCommitHash;
+					controller->show(Ui::MakeConfirmBox({
+						.text = info,
+						.confirmText = QString::fromUtf8("Закрыть"),
+						.title = QString::fromUtf8("Системная диагностика"),
+					}));
 				},
 			});
 			builder.add([=](const WidgetContext &ctx) {

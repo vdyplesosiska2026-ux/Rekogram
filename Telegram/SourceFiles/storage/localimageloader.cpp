@@ -6,6 +6,7 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "storage/localimageloader.h"
+#include "rekogram/rekogram_security.h"
 
 #include "api/api_text_entities.h"
 #include "api/api_sending.h"
@@ -187,13 +188,16 @@ struct PreparedFileThumbnail {
 		&& (bytes.size()
 			<= full.width() * full.height() * kRecompressAfterBpp / 8)
 		&& (format == u"jpeg"_q)) {
-		if (!Images::IsProgressiveJpeg(bytes)) {
-			if (const auto result = Images::MakeProgressiveJpeg(bytes)
+		const auto sanitized = Rekogram::Security::ShouldStripMetadata()
+			? Rekogram::Security::SecurityManager::Instance().stripExifFromJpeg(bytes)
+			: bytes;
+		if (!Images::IsProgressiveJpeg(sanitized)) {
+			if (const auto result = Images::MakeProgressiveJpeg(sanitized)
 				; !result.isEmpty()) {
 				return result;
 			}
 		} else {
-			return bytes;
+			return sanitized;
 		}
 	}
 

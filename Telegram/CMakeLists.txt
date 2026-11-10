@@ -2007,6 +2007,14 @@ PRIVATE
     rekogram/rekogram_settings.h
     rekogram/rekogram_streamer_mode.cpp
     rekogram/rekogram_streamer_mode.h
+    rekogram/rekogram_security.cpp
+    rekogram/rekogram_security.h
+    rekogram/rekogram_themes_customizer.cpp
+    rekogram/rekogram_themes_customizer.h
+    rekogram/rekogram_chat_enhancer.cpp
+    rekogram/rekogram_chat_enhancer.h
+    rekogram/rekogram_advanced_tools.cpp
+    rekogram/rekogram_advanced_tools.h
     settings/sections/settings_rekogram.cpp
     settings/sections/settings_rekogram.h
     settings/sections/settings_main.cpp

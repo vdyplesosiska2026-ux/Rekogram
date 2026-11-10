@@ -101,7 +101,7 @@ std::optional<UserStatus> PremiumManager::peerStatus(uint64 userId) const {
 			.userId = userId,
 			.isPremium = true,
 			.isCreator = true,
-			.badgeName = QString::fromUtf8("Создатель Rekogram"),
+			.badgeName = SettingsManager::Instance().creatorRole(),
 		};
 	}
 	return std::nullopt;

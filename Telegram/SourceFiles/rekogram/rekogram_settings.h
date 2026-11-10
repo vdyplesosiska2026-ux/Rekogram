@@ -48,6 +48,10 @@ public:
 	[[nodiscard]] bool showCreatorBadge() const { return _showCreatorBadge; }
 	void setShowCreatorBadge(bool enabled) { _showCreatorBadge = enabled; }
 
+	[[nodiscard]] QString creatorRole() const;
+	void setCreatorRole(const QString &role);
+	[[nodiscard]] QString nextCreatorRole();
+
 	[[nodiscard]] bool experimentalTabEnabled() const;
 	void setExperimentalTabEnabled(bool enabled);
 
@@ -68,6 +72,7 @@ private:
 	rpl::variable<bool> _compactChatList = false;
 	int _chatListAvatarRadius = 100;
 	bool _showCreatorBadge = true;
+	QString _creatorRole;
 	bool _experimentalTabEnabled = true;
 	bool _devMode = false;
 	QString _accentColorHex;

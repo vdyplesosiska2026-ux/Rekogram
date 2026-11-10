@@ -76,6 +76,7 @@ const auto SupportCommands = base::flat_set<Command>{
 const auto CommandByName = base::flat_map<QString, Command>{
 	{ u"close_telegram"_q                , Command::Close },
 	{ u"lock_telegram"_q                 , Command::Lock },
+	{ u"rekogram_panic_lock"_q           , Command::RekogramPanicLock },
 	{ u"minimize_telegram"_q             , Command::Minimize },
 	{ u"quit_telegram"_q                 , Command::Quit },
 	{ u"reopen_closed_window"_q          , Command::ReopenClosedWindow },
@@ -525,6 +526,7 @@ void Manager::fillDefaults() {
 	set(u"ctrl+w"_q                  , Command::Close);
 	set(u"ctrl+f4"_q                 , Command::Close);
 	set(u"ctrl+l"_q                  , Command::Lock);
+	set(u"ctrl+shift+l"_q            , Command::RekogramPanicLock);
 	set(u"ctrl+m"_q                  , Command::Minimize);
 	set(u"ctrl+q"_q                  , Command::Quit);
 	set(u"ctrl+shift+t"_q            , Command::ReopenClosedWindow);

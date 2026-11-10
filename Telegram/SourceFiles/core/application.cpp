@@ -25,6 +25,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "core/core_settings.h"
 #include "core/update_checker.h"
 #include "core/shortcuts.h"
+#include "rekogram/rekogram_security.h"
 #include "core/sandbox.h"
 #include "core/local_url_handlers.h"
 #include "core/launcher.h"
@@ -2107,6 +2108,10 @@ void Application::startShortcuts() {
 				return true;
 			}
 			return false;
+		});
+		request->check(Command::RekogramPanicLock) && request->handle([=] {
+			Rekogram::Security::SecurityManager::Instance().triggerPanicLock();
+			return true;
 		});
 		request->check(Command::Minimize) && request->handle([=] {
 			return minimizeActiveWindow();
