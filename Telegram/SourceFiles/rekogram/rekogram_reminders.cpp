@@ -29,7 +29,7 @@ RemindersManager &RemindersManager::Instance() {
 RemindersManager::RemindersManager() {
 	load();
 	_checkTimer.setInterval(30000);
-	_checkTimer.callOnTimeout(this, [this] { checkDueReminders(); });
+	_checkTimer.callOnTimeout([this] { checkDueReminders(); });
 	_checkTimer.start();
 	checkDueReminders();
 }

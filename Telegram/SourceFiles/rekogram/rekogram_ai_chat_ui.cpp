@@ -9,6 +9,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 
 #include "rekogram/rekogram_ai_chat.h"
 #include "window/window_session_controller.h"
+#include "mainwindow.h"
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QVBoxLayout>
@@ -17,6 +18,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QScrollBar>
 #include <QtCore/QDateTime>
 
 namespace Rekogram {

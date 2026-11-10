@@ -16,6 +16,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "rekogram/rekogram_settings.h"
 #include "rekogram/rekogram_streamer_mode.h"
 #include "window/window_session_controller.h"
+#include "mainwindow.h"
 #include "window/themes/window_theme.h"
 #include "ui/boxes/confirm_box.h"
 #include "ui/toast/toast.h"

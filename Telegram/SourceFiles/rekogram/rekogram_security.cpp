@@ -145,7 +145,7 @@ UrlAuditDetails SecurityManager::auditUrl(const QString &url) const {
 
 	// Check dangerous protocol handlers
 	for (const auto &badScheme : kDangerousSchemes) {
-		if (details.scheme == badScheme || trimmed.startsWith(badScheme + u":", Qt::CaseInsensitive)) {
+		if (details.scheme == badScheme || trimmed.startsWith(badScheme + QStringLiteral(":"), Qt::CaseInsensitive)) {
 			details.result = UrlSafetyResult::DangerousScheme;
 			details.isDangerous = true;
 			details.warningMessage = QString::fromUtf8("Заблокирован опасный системный протокол: ") + badScheme;

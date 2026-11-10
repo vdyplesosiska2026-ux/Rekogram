@@ -218,7 +218,8 @@ void CustomizerManager::applyFont(const QString &fontFamily) {
 }
 
 void CustomizerManager::loadGoogleSansCdn() {
-	const auto families = QFontDatabase::families();
+	const auto database = QFontDatabase();
+	const auto families = database.families();
 	if (families.contains(u"Google Sans"_q, Qt::CaseInsensitive)) {
 		return;
 	}

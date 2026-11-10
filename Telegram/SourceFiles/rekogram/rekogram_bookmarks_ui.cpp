@@ -12,6 +12,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "data/data_peer_id.h"
 #include "data/data_msg_id.h"
 #include "window/window_session_controller.h"
+#include "mainwindow.h"
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QVBoxLayout>
@@ -74,7 +75,7 @@ private:
 			const auto items = BookmarksManager::Instance().list();
 			for (const auto &item : items) {
 				auto *li = new QListWidgetItem(_bookmarksList);
-				QString text = item.text;
+				QString text = item.previewText;
 				if (text.size() > 120) text = text.left(120) + "…";
 				li->setText(text);
 				li->setData(Qt::UserRole, QString::number(item.msgId.peer.value) + ":" + QString::number(item.msgId.msg.bare));
