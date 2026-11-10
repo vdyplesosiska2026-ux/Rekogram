@@ -5919,9 +5919,18 @@ void HistoryWidget::send(Api::SendOptions options) {
 		const auto currentText = _field->getTextWithAppliedMarkdown();
 		const auto trimmed = currentText.text.trimmed();
 		if (trimmed.startsWith('!')) {
-			const auto expanded = Rekogram::QuickRepliesManager::Instance().findText(trimmed);
+			const auto spaceIndex = trimmed.indexOf(' ');
+			const auto keyword = (spaceIndex > 0)
+				? trimmed.left(spaceIndex)
+				: trimmed;
+			const auto expanded = Rekogram::QuickRepliesManager::Instance().findText(keyword);
 			if (!expanded.isEmpty()) {
-				_field->setTextWithTags({ expanded });
+				const auto rest = (spaceIndex > 0)
+					? trimmed.mid(spaceIndex + 1)
+					: QString();
+				_field->setTextWithTags({
+					rest.isEmpty() ? expanded : expanded + ' ' + rest
+				});
 			}
 		}
 	}

@@ -11,6 +11,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <QtGui/QClipboard>
 #include "ui/toast/toast.h"
 #include "rekogram/rekogram_settings.h"
+#include "rekogram/rekogram_streamer_mode.h"
 
 #include "settings/sections/settings_main.h"
 #include "settings/settings_builder.h"
@@ -600,7 +601,14 @@ void SetupRows(
 		tr::lng_settings_phone_label(),
 		Info::Profile::PhoneWithSpoilerValue(
 			self,
-			Info::Profile::PhoneValue(self)),
+			Info::Profile::PhoneValue(self) | rpl::map([](TextWithEntities v) {
+				const auto &sm = Rekogram::StreamerModeManager::Instance();
+				if (sm.enabled() && sm.hidePhone()) {
+					v.text = sm.maskString(v.text);
+					v.entities.clear();
+				}
+				return v;
+			})),
 		tr::lng_profile_copy_phone(tr::now),
 		showChangePhone,
 		{ &st::menuIconPhone },
@@ -613,7 +621,14 @@ void SetupRows(
 		targets->phone = phoneButton;
 	}
 
-	auto username = Info::Profile::UsernameValue(self);
+	auto username = Info::Profile::UsernameValue(self) | rpl::map([](TextWithEntities v) {
+		const auto &sm = Rekogram::StreamerModeManager::Instance();
+		if (sm.enabled() && sm.hideUserData()) {
+			v.text = sm.maskString(v.text);
+			v.entities.clear();
+		}
+		return v;
+	});
 	auto empty = base::duplicate(
 		username
 	) | rpl::map([](const TextWithEntities &username) {

@@ -33,6 +33,7 @@ public:
 	void sendMessage(const QString &text);
 	[[nodiscard]] std::vector<AIChatMessage> messages() const;
 	void clearHistory();
+	void reload() { load(); }
 
 	[[nodiscard]] bool isConfigured() const;
 	[[nodiscard]] QString providerName() const;

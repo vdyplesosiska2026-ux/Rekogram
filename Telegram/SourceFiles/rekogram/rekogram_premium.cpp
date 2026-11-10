@@ -10,7 +10,9 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "core/application.h"
 #include "core/core_settings.h"
 #include "ui/painter.h"
+#include <QtCore/QDateTime>
 #include <QtGui/QPainterPath>
+#include <optional>
 
 namespace Rekogram {
 namespace {
@@ -66,10 +68,8 @@ bool PremiumManager::isPremium(UserId userId) const {
 	if (it != _peerRegistry.end()) {
 		return it->second.isPremium;
 	}
-	// Local user active toggle
-	if (_localPremium.current()) {
-		return true;
-	}
+	// Local premium applies to the local user only; callers check
+	// IsLocalPremiumEnabled() together with isSelf() for that case.
 	return false;
 }
 
@@ -84,7 +84,7 @@ void PremiumManager::registerPeerStatus(uint64 userId, bool isPremium, const QSt
 	_peerRegistry[userId] = UserStatus{
 		.userId = userId,
 		.isPremium = isPremium,
-		.isCreator = (userId == kDefaultOwnerUserId),
+		.isCreator = (userId == SettingsManager::Instance().ownerId()),
 		.activatedTimestamp = static_cast<uint64>(QDateTime::currentSecsSinceEpoch()),
 		.badgeName = badge.isEmpty() ? QString::fromUtf8("Rekogram Premium") : badge,
 	};
@@ -95,7 +95,8 @@ std::optional<UserStatus> PremiumManager::peerStatus(uint64 userId) const {
 	if (it != _peerRegistry.end()) {
 		return it->second;
 	}
-	if (userId == kDefaultOwnerUserId) {
+	const auto ownerId = SettingsManager::Instance().ownerId();
+	if (userId == ownerId) {
 		return UserStatus{
 			.userId = userId,
 			.isPremium = true,

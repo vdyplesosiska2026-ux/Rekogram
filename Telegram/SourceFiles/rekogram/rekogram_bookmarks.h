@@ -29,6 +29,7 @@ public:
 	void addBookmark(FullMsgId id, const QString &text, const QString &note = QString(), const QString &category = QString());
 	void removeBookmark(FullMsgId id);
 	[[nodiscard]] bool isBookmarked(FullMsgId id) const;
+	void reload() { load(); }
 
 	[[nodiscard]] std::vector<BookmarkItem> list(const QString &categoryFilter = QString()) const;
 	[[nodiscard]] std::vector<QString> categories() const;

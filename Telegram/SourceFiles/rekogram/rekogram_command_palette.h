@@ -8,6 +8,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #pragma once
 
 #include <QtCore/QString>
+#include <functional>
 #include <vector>
 
 namespace Window {
@@ -21,6 +22,7 @@ struct CommandItem {
 	QString title;
 	QString category;
 	QString shortcut;
+	std::function<void()> action;
 };
 
 class CommandPaletteManager final {

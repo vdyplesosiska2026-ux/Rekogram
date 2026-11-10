@@ -12,6 +12,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
+#include "ui/toast/toast.h"
 
 namespace Rekogram {
 namespace {
@@ -27,6 +28,28 @@ RemindersManager &RemindersManager::Instance() {
 
 RemindersManager::RemindersManager() {
 	load();
+	_checkTimer.setInterval(30000);
+	_checkTimer.callOnTimeout(this, [this] { checkDueReminders(); });
+	_checkTimer.start();
+	checkDueReminders();
+}
+
+void RemindersManager::checkDueReminders() {
+	const auto now = QDateTime::currentDateTime();
+	bool changed = false;
+	for (auto &item : _items) {
+		if (!item.completed && item.triggerTime <= now) {
+			item.completed = true;
+			changed = true;
+			Ui::Toast::Show(QString::fromUtf8("Напоминание Rekogram: %1")
+				.arg(item.text.isEmpty()
+					? QString::fromUtf8("сообщение")
+					: item.text));
+		}
+	}
+	if (changed) {
+		save();
+	}
 }
 
 void RemindersManager::load() {

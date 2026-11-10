@@ -75,6 +75,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "chat_helpers/emoji_interactions.h"
 #include "core/shortcuts.h"
 #include "core/application.h"
+#include "rekogram/rekogram_command_palette.h"
 #include "core/core_screenshot_protection.h"
 #include "core/click_handler_types.h"
 #include "core/file_utilities.h"
@@ -2180,6 +2181,11 @@ void SessionController::setupShortcuts() {
 				return true;
 			});
 		}
+
+		request->check(C::RekogramPalette) && request->handle([=] {
+			Rekogram::CommandPalette::Show(this);
+			return true;
+		});
 
 		if (!session().supportMode()) {
 			return;

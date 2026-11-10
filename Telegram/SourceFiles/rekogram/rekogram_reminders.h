@@ -10,6 +10,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "data/data_msg_id.h"
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
+#include <QtCore/QTimer>
 #include <vector>
 
 namespace Rekogram {
@@ -28,6 +29,7 @@ public:
 	void addReminder(FullMsgId id, const QString &text, const QDateTime &time);
 	void removeReminder(FullMsgId id);
 	void markCompleted(FullMsgId id);
+	void reload() { load(); }
 
 	[[nodiscard]] std::vector<ReminderItem> activeReminders() const;
 
@@ -35,8 +37,10 @@ private:
 	RemindersManager();
 	void load();
 	void save();
+	void checkDueReminders();
 
 	std::vector<ReminderItem> _items;
+	QTimer _checkTimer;
 };
 
 } // namespace Rekogram

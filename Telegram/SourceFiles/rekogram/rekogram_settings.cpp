@@ -19,6 +19,7 @@ constexpr auto kChatListAvatarRadiusPref = "reko_chat_avatar_radius";
 constexpr auto kExperimentalTabPref = "reko_experimental_tab";
 constexpr auto kDevModePref = "reko_dev_mode";
 constexpr auto kAccentColorPref = "reko_accent_color";
+constexpr auto kShowCreatorBadgePref = "reko_show_creator_badge";
 
 } // namespace
 
@@ -41,6 +42,7 @@ void SettingsManager::loadSettings() {
 	_devMode = core.readPref<bool>(kDevModePref, false);
 	const auto accentBytes = core.readPref<QByteArray>(kAccentColorPref, QByteArray());
 	_accentColorHex = QString::fromUtf8(accentBytes);
+	_showCreatorBadge = core.readPref<bool>(kShowCreatorBadgePref, true);
 }
 
 void SettingsManager::saveSettings() {
@@ -51,6 +53,7 @@ void SettingsManager::saveSettings() {
 	core.writePref<bool>(kExperimentalTabPref, _experimentalTabEnabled);
 	core.writePref<bool>(kDevModePref, _devMode);
 	core.writePref<QByteArray>(kAccentColorPref, _accentColorHex.toUtf8());
+	core.writePref<bool>(kShowCreatorBadgePref, _showCreatorBadge);
 }
 
 bool SettingsManager::isOwner(UserId userId) const {
@@ -140,6 +143,7 @@ void SettingsManager::resetToDefaults() {
 	_experimentalTabEnabled = true;
 	_devMode = false;
 	_accentColorHex.clear();
+	_showCreatorBadge = true;
 	saveSettings();
 }
 

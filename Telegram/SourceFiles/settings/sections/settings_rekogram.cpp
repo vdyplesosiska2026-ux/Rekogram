@@ -16,9 +16,11 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "lang/lang_keys.h"
 #include "main/main_session.h"
 #include "rekogram/rekogram_ai_chat.h"
+#include "rekogram/rekogram_ai_chat_ui.h"
 #include "rekogram/rekogram_backup.h"
 #include "rekogram/rekogram_badge.h"
 #include "rekogram/rekogram_bookmarks.h"
+#include "rekogram/rekogram_bookmarks_ui.h"
 #include "rekogram/rekogram_command_palette.h"
 #include "rekogram/rekogram_inspector.h"
 #include "rekogram/rekogram_plugin_system.h"
@@ -461,34 +463,10 @@ private:
 			builder.addSubsectionTitle(rpl::single(QString::fromUtf8("Инспектор и закладки")));
 			builder.addButton({
 				.id = u"reko_msg/bookmarks"_q,
-				.title = rpl::single(QString::fromUtf8("Закладки сообщений Rekogram")),
+				.title = rpl::single(QString::fromUtf8("Закладки и напоминания")),
 				.icon = { &st::menuIconShowInFolder },
 				.onClick = [=] {
-					const auto count = Rekogram::BookmarksManager::Instance().list().size();
-					controller->show(Ui::MakeConfirmBox({
-						.text = QString::fromUtf8(
-							"Сохранено сообщений в закладках: %1.\n\n"
-							"Добавлять и удалять закладки можно через контекстное меню любого сообщения в чате.")
-							.arg(count),
-						.confirmText = QString::fromUtf8("Понятно"),
-						.title = QString::fromUtf8("Закладки сообщений"),
-					}));
-				},
-			});
-			builder.addButton({
-				.id = u"reko_msg/reminders"_q,
-				.title = rpl::single(QString::fromUtf8("Напоминания о сообщениях")),
-				.icon = { &st::menuIconTimer },
-				.onClick = [=] {
-					const auto count = Rekogram::RemindersManager::Instance().activeReminders().size();
-					controller->show(Ui::MakeConfirmBox({
-						.text = QString::fromUtf8(
-							"Активных напоминаний: %1.\n\n"
-							"Установить напоминание можно через контекстное меню сообщения.")
-							.arg(count),
-						.confirmText = QString::fromUtf8("Понятно"),
-						.title = QString::fromUtf8("Напоминания"),
-					}));
+					Rekogram::BookmarksUI::Show(controller);
 				},
 			});
 			builder.addButton({
@@ -571,6 +549,14 @@ private:
 						: u"Local (Offline)"_q;
 					Rekogram::AIChatManager::Instance().setProvider(next);
 					Ui::Toast::Show(QString::fromUtf8("Выбран AI провайдер: ") + next);
+				},
+			});
+			builder.addButton({
+				.id = u"reko_ai/open_chat"_q,
+				.title = rpl::single(QString::fromUtf8("Открыть чат с AI Ассистентом")),
+				.icon = { &st::menuIconTranslate },
+				.onClick = [=] {
+					Rekogram::AIChatUI::Show(controller);
 				},
 			});
 		};
@@ -1052,70 +1038,150 @@ const auto kMetaGeneral = BuildHelper({
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconSettings,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/general"_q,
+			.title = QString::fromUtf8("Общие настройки Rekogram"),
+			.keywords = { u"general"_q, u"backup"_q, u"reset"_q, u"общие"_q, u"резервная копия"_q },
+		};
+	});
+});
 
 const auto kMetaAppearance = BuildHelper({
 	.id = RekogramAppearanceSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconNightMode,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/appearance"_q,
+			.title = QString::fromUtf8("Внешний вид и темы Rekogram"),
+			.keywords = { u"appearance"_q, u"theme"_q, u"compact"_q, u"avatar"_q, u"внешний вид"_q, u"темы"_q },
+		};
+	});
+});
 
 const auto kMetaPrivacy = BuildHelper({
 	.id = RekogramPrivacySection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconLock,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/privacy"_q,
+			.title = QString::fromUtf8("Приватность и безопасность Rekogram"),
+			.keywords = { u"privacy"_q, u"security"_q, u"streamer"_q, u"shield"_q, u"приватность"_q, u"безопасность"_q },
+		};
+	});
+});
 
 const auto kMetaChats = BuildHelper({
 	.id = RekogramChatsSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconChatBubble,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/chats"_q,
+			.title = QString::fromUtf8("Чаты и общение Rekogram"),
+			.keywords = { u"chats"_q, u"quick replies"_q, u"быстрые ответы"_q, u"шаблоны"_q },
+		};
+	});
+});
 
 const auto kMetaMessages = BuildHelper({
 	.id = RekogramMessagesSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconShowInFolder,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/messages"_q,
+			.title = QString::fromUtf8("Сообщения и медиа Rekogram"),
+			.keywords = { u"messages"_q, u"inspector"_q, u"bookmarks"_q, u"reminders"_q, u"закладки"_q, u"напоминания"_q },
+		};
+	});
+});
 
 const auto kMetaAI = BuildHelper({
 	.id = RekogramAISection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconTranslate,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/ai"_q,
+			.title = QString::fromUtf8("AI и перевод Rekogram"),
+			.keywords = { u"ai"_q, u"translate"_q, u"assistant"_q, u"нейросеть"_q, u"перевод"_q },
+		};
+	});
+});
 
 const auto kMetaPlugins = BuildHelper({
 	.id = RekogramPluginsSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconManage,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/plugins"_q,
+			.title = QString::fromUtf8("Расширения и плагины Rekogram"),
+			.keywords = { u"plugins"_q, u"extensions"_q, u"плагины"_q, u"расширения"_q },
+		};
+	});
+});
 
 const auto kMetaAdvanced = BuildHelper({
 	.id = RekogramAdvancedSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconShortcut,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/advanced"_q,
+			.title = QString::fromUtf8("Продвинутые настройки Rekogram"),
+			.keywords = { u"advanced"_q, u"developer"_q, u"palette"_q, u"shortcuts"_q, u"разработчик"_q },
+		};
+	});
+});
 
 const auto kMetaPremium = BuildHelper({
 	.id = RekogramPremiumSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconGiftPremium,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/premium"_q,
+			.title = QString::fromUtf8("Rekogram Premium"),
+			.keywords = { u"premium"_q, u"local premium"_q, u"премиум"_q, u"emoji"_q },
+		};
+	});
+});
 
 const auto kMetaAbout = BuildHelper({
 	.id = RekogramAboutSection::Id(),
 	.parentId = RekogramSection::Id(),
 	.title = &tr::lng_settings_section_info,
 	.icon = &st::menuIconEmojiObjects,
-}, [](SectionBuilder &builder) {});
+}, [](SectionBuilder &builder) {
+	builder.add(nullptr, [] {
+		return SearchEntry{
+			.id = u"rekogram/about"_q,
+			.title = QString::fromUtf8("О Rekogram"),
+			.keywords = { u"about"_q, u"version"_q, u"о программе"_q },
+		};
+	});
+});
 
 } // namespace
 

@@ -21,6 +21,10 @@ MessageDetails MessageInspector::ExtractDetails(not_null<HistoryItem*> item) {
 	details.fromPeerId = item->from() ? item->from()->id : PeerId(0);
 	details.toPeerId = item->history() ? item->history()->peer->id : PeerId(0);
 	details.date = QDateTime::fromSecsSinceEpoch(item->date());
+	if (const auto edited = item->Get<HistoryMessageEdited>()) {
+		details.editDate = QDateTime::fromSecsSinceEpoch(edited->date);
+	}
+	details.forwardOriginalDate = item->originalDate();
 	details.rawText = item->originalText().text;
 	return details;
 }

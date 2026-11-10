@@ -95,6 +95,8 @@ enum class Command {
 	SupportScrollToCurrent,
 	SupportHistoryBack,
 	SupportHistoryForward,
+
+	RekogramPalette,
 };
 
 [[maybe_unused]] constexpr auto kShowFolder = {

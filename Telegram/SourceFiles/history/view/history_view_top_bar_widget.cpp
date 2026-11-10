@@ -709,7 +709,9 @@ void TopBarWidget::paintTopBar(Painter &p) {
 		});
 		namewidth -= badgeWidth;
 
-		if (namePeer && Rekogram::IsOwnerPeer(namePeer->id)) {
+		if (namePeer
+			&& Rekogram::SettingsManager::Instance().showCreatorBadge()
+			&& Rekogram::IsOwnerPeer(namePeer->id)) {
 			Rekogram::PaintCreatorBadge(
 				p,
 				QPoint(nameleft, nametop),

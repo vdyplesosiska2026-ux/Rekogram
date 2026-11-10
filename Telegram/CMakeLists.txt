@@ -1981,12 +1981,16 @@ PRIVATE
     settings/sections/settings_local_storage.h
     rekogram/rekogram_ai_chat.cpp
     rekogram/rekogram_ai_chat.h
+    rekogram/rekogram_ai_chat_ui.cpp
+    rekogram/rekogram_ai_chat_ui.h
     rekogram/rekogram_backup.cpp
     rekogram/rekogram_backup.h
     rekogram/rekogram_badge.cpp
     rekogram/rekogram_badge.h
     rekogram/rekogram_bookmarks.cpp
     rekogram/rekogram_bookmarks.h
+    rekogram/rekogram_bookmarks_ui.cpp
+    rekogram/rekogram_bookmarks_ui.h
     rekogram/rekogram_command_palette.cpp
     rekogram/rekogram_command_palette.h
     rekogram/rekogram_inspector.cpp

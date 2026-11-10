@@ -146,6 +146,7 @@ const auto CommandByName = base::flat_map<QString, Command>{
 	{ u"archive_chat"_q                  , Command::ArchiveChat },
 	{ u"record_round"_q                  , Command::RecordRound },
 	{ u"show_admin_log"_q                , Command::ShowAdminLog },
+	{ u"rekogram_palette"_q             , Command::RekogramPalette },
 	//
 };
 
@@ -587,7 +588,9 @@ void Manager::fillDefaults() {
 	set(u"ctrl+r"_q                  , Command::RecordVoice);
 
 	set(u"ctrl+s"_q                  , Command::StashMessage);
+set(u"ctrl+k"_q                  , Command::RekogramPalette);
 
+	
 	_defaults = keysCurrents();
 }
 

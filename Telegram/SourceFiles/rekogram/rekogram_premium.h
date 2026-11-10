@@ -12,6 +12,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include <rpl/variable.h>
 #include <QtGui/QPainter>
 #include <base/flat_map.h>
+#include <optional>
 
 namespace Rekogram {
 

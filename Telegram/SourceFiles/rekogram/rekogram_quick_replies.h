@@ -23,6 +23,7 @@ public:
 
 	void addTemplate(const QString &keyword, const QString &text);
 	void removeTemplate(const QString &keyword);
+	void reload() { load(); }
 	[[nodiscard]] std::vector<QuickReplyItem> list() const;
 	[[nodiscard]] QString findText(const QString &keyword) const;
 

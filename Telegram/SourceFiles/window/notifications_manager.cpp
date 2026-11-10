@@ -45,6 +45,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "main/main_session_settings.h"
 #include "ui/text/text_utilities.h"
 #include "platform/platform_specific.h"
+#include "rekogram/rekogram_streamer_mode.h"
 
 #include <QtGui/QWindow>
 #include <QtGui/QGuiApplication>
@@ -1720,27 +1721,33 @@ void NativeManager::doShowNotification(NotificationFields &&fields) {
 		: options.hideNameAndPhoto
 		? QString()
 		: item->notificationHeader();
-	const auto text = pollVote
-		? TextWithPermanentSpoiler(ComposePollVoteNotification(
-			item,
-			fields.pollVoteOption,
-			options.hideMessageText))
-		: reactionFrom
-		? TextWithPermanentSpoiler(ComposeReactionNotification(
-			item,
-			fields.reactionId,
-			options.hideMessageText))
-		: options.hideMessageText
-		? tr::lng_notification_preview(tr::now)
-		: (fields.forwardedCount > 1)
-		? tr::lng_forward_messages(tr::now, lt_count, fields.forwardedCount)
-		: item->groupId()
-		? tr::lng_in_dlg_album(tr::now)
-		: TextWithForwardedChar(
-			TextWithPermanentSpoiler(item->notificationText({
-				.spoilerLoginCode = options.spoilerLoginCode,
-			})),
-			(fields.forwardedCount == 1));
+	const auto text = [&] {
+		const auto &sm = Rekogram::StreamerModeManager::Instance();
+		if (sm.enabled() && sm.muteNotificationContent()) {
+			return QString::fromUtf8("Новое сообщение");
+		}
+		return pollVote
+			? TextWithPermanentSpoiler(ComposePollVoteNotification(
+				item,
+				fields.pollVoteOption,
+				options.hideMessageText))
+			: reactionFrom
+			? TextWithPermanentSpoiler(ComposeReactionNotification(
+				item,
+				fields.reactionId,
+				options.hideMessageText))
+			: options.hideMessageText
+			? tr::lng_notification_preview(tr::now)
+			: (fields.forwardedCount > 1)
+			? tr::lng_forward_messages(tr::now, lt_count, fields.forwardedCount)
+			: item->groupId()
+			? tr::lng_in_dlg_album(tr::now)
+			: TextWithForwardedChar(
+				TextWithPermanentSpoiler(item->notificationText({
+					.spoilerLoginCode = options.spoilerLoginCode,
+				})),
+				(fields.forwardedCount == 1));
+	}();
 
 	// #TODO optimize
 	auto userpicView = item->history()->peer->createUserpicView();
